@@ -1,5 +1,5 @@
-const regrexEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-const regrexPhone = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+const regrexEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+// const regrexPhone = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
 const dummyData = localStorage.getItem('dummyData') ? JSON.parse(localStorage.getItem('dummyData')) : [];
 let tbody = document.querySelector('tbody');
 
@@ -10,7 +10,6 @@ let dob = document.getElementById('dob');
 let email = document.getElementById('email');
 let phone = document.getElementById('phone');
 let gender = document.querySelector('input[name="gender"]:checked');
-
 
 let hobbies = [];
 
@@ -36,8 +35,8 @@ const createData = () => {
       gender: gender.value,
       dob: dob.value,
       email: email.value,
-      phone: phone.value || null,
-      hobbies: hobbies || null,
+      phone: phone.value || 'null',
+      hobbies: !hobbies.length == 0 ? hobbies : 'null',
     });
     localStorage.setItem('dummyData', JSON.stringify(dummyData));
     checkData();
@@ -51,7 +50,7 @@ const createData = () => {
       document.getElementById(`${val}`).checked = false;
     });
     // hobbies = ""
-    insertDataToAdvTable()
+    insertDataToAdvTable();
   }
 };
 
@@ -98,7 +97,7 @@ const deleteData = (rowCount) => {
 
     localStorage.setItem('dummyData', JSON.stringify(updatedData));
     checkData();
-    insertDataToAdvTable()
+    insertDataToAdvTable();
   }
 };
 
@@ -135,7 +134,7 @@ updateDataBtn.addEventListener('click', (val) => {
   let updateDataBtn = document.getElementById('updateDataBtn');
   let rowCount = updateDataBtn.value;
 
-  if (name.value !== '' && gender.value !== '' && dob.value !== '' && email.value.match(regrex)) {
+  if (name.value !== '' && gender.value !== '' && dob.value !== '' && email.value.match(regrexEmail)) {
     gender = document.querySelector('input[name="gender"]:checked');
     // console.log(rowNumber);
     // console.log(gender.value);
@@ -153,8 +152,8 @@ updateDataBtn.addEventListener('click', (val) => {
       gender: gender.value,
       dob: dob.value,
       email: email.value,
-      phone: phone.value || null,
-      hobbies: hobbies || null,
+      phone: phone.value || 'null',
+      hobbies: hobbies || 'null',
     };
 
     console.log(newData);
@@ -163,7 +162,7 @@ updateDataBtn.addEventListener('click', (val) => {
     previousData.splice(rowCount, 1, newData);
     localStorage.setItem('dummyData', JSON.stringify(previousData));
     checkData();
-    insertDataToAdvTable()
+    insertDataToAdvTable();
 
     console.log(previousData);
 
@@ -212,7 +211,7 @@ const searchEntries = (e) => {
 //################## Advance table JS ##############################
 
 const insertDataToAdvTable = () => {
-  const advTableContent = document.querySelector("#adv tbody")
+  const advTableContent = document.querySelector('#adv tbody');
   advTableContent.innerHTML = `
 
   <tr>
@@ -240,17 +239,14 @@ const insertDataToAdvTable = () => {
   <button class="btn">Delete</button>
 </td> -->
 </tr>
-  
-  
-  `
+
+
+  `;
   const trs = document.querySelectorAll('#adv tr');
   // setData = JSON.parse(localStorage.getItem("dummyData"));
   // console.log("setData", setData);
 
   setData?.forEach((item, index) => {
-
-
-
     let val = Object.values(item);
 
     for (let i = 0; i < 7; i++) {
@@ -258,50 +254,35 @@ const insertDataToAdvTable = () => {
 
       // console.log(val);
       let td = document.createElement('td');
-      td.classList.add(index)
+      td.classList.add(index);
 
-      td.innerText = val[i] || "empty";
+      td.innerText = val[i] || 'empty';
       if (i == 6) {
         td.innerHTML = `  <button onclick="editEntries(${index})">edit</button>
-        <button class="btn" onclick="deleteData(${index})">Delete</button>`
-
+        <button class="btn" onclick="deleteData(${index})">Delete</button>`;
       }
 
       trs[i].appendChild(td);
-
-
     }
   });
-
-
-
-
-
 };
-insertDataToAdvTable()
-
+insertDataToAdvTable();
 
 const sortEntriesAccToDob = () => {
-
-  const sortBox = document.querySelector("[name='sortEntries']")
+  const sortBox = document.querySelector("[name='sortEntries']");
+  let sortedData;
 
   if (sortBox.checked) {
-    const sortedData = setData?.sort((firstDate, secondDate) => {
-      return new Date(firstDate.dob) - new Date(secondDate.dob)
+    sortedData = setData?.toSorted((firstDate, secondDate) => {
+      return new Date(firstDate.dob) - new Date(secondDate.dob);
+    });
+  } else {
+    sortedData = setData;
+  }
 
-
-
-    })
-
-
-
-
-    // let filterData = setData?.filter((item) => {
-    //   return item?.name.toLowerCase().includes(e);
-    // });
-    let previousData = '';
-    sortedData?.forEach((val, index) => {
-      previousData += `<tr id=${index}  >
+  let previousData = '';
+  sortedData?.forEach((val, index) => {
+    previousData += `<tr id=${index}  >
         <td>${val.name}</td>
         <td>${val.gender}</td>
         <td>${val.dob}</td>
@@ -314,14 +295,7 @@ const sortEntriesAccToDob = () => {
           <button onclick="deleteData(${index})">Delete</button>
         </td>
       </tr>`;
-    });
+  });
 
-    tbody.innerHTML = previousData;
-
-  }
-
-
-
-
-}
-
+  tbody.innerHTML = previousData;
+};

@@ -1,6 +1,6 @@
 /* ###### Add Employee Form Styling #########  */
 
-.main-container>h3 {
+.main-container > h3 {
   text-align: center;
 }
 
@@ -28,9 +28,8 @@
 
 .row:nth-child(6) {
   /* display: flex; */
-  align-items: normal
+  align-items: normal;
 }
-
 
 .col {
   margin: 5px;
@@ -80,30 +79,32 @@ td {
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: auto;
 }
 
-.container-basic-table>table {
+.container-basic-table > table {
   width: 96%;
   margin: 10px;
 }
 
-tbody>tr>td:last-child {
+tbody > tr > td:last-child {
   display: flex;
   justify-content: center;
 }
 
-.container-basic-table {
+/* .container-basic-table {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
+  overflow: auto;
+} */
 
-.container-basic-table>table {
+.container-basic-table > table {
   width: 96%;
   margin: 10px;
 }
 
-tbody>tr>td:last-child {
+tbody > tr > td:last-child {
   display: flex;
   justify-content: center;
 }
@@ -122,11 +123,11 @@ tbody>tr>td:last-child {
   align-items: center;
 }
 
-#searchBox>input {
+#searchBox > input {
   border-radius: 5px;
   margin-right: 20px;
 }
 
-[for="sortEntries"] {
+[for='sortEntries'] {
   vertical-align: bottom;
 }
