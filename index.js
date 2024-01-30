@@ -11,15 +11,17 @@ let email = document.getElementById('email');
 let phone = document.getElementById('phone');
 let gender = document.querySelector('input[name="gender"]:checked');
 
+// console.log(gender.value);
+
 let hobbies = [];
 
 //###################### Create entries ######################################################
 
 const createData = () => {
-  // console.log('gender', gender);
+  // console.log('gender', gender.value);
   hobbies = [];
 
-  // gender = document.querySelector('input[name="gender"]:checked');
+  gender = document.querySelector('input[name="gender"]:checked');
 
   // console.log(gender.value);
   let getHobbies = document.querySelectorAll('input[type="checkbox"]:checked');
