@@ -1,5 +1,5 @@
 const regrexEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-// const regrexPhone = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+const regrexPhone = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
 const dummyData = localStorage.getItem('dummyData') ? JSON.parse(localStorage.getItem('dummyData')) : [];
 let tbody = document.querySelector('tbody');
 
@@ -31,6 +31,10 @@ const createData = () => {
     // console.log(x);
   }
 
+  // if (phone.value.match(regrexPhone)) {
+
+  // }
+
   if (name.value !== '' && gender.value !== '' && dob.value !== '' && email.value.match(regrexEmail)) {
     dummyData.push({
       name: name.value,
@@ -54,6 +58,10 @@ const createData = () => {
     // hobbies = ""
     insertDataToAdvTable();
   }
+  // if (setData.length !== 0) {
+  //   let a = document.querySelector("[value='Delete all']");
+  //   a.style.display = 'block';
+  // }
 };
 
 const checkData = () => {
@@ -70,7 +78,7 @@ const checkData = () => {
         <td>${val.phone}</td>
         <td>${val.hobbies}</td>
         <td>
-          <button onclick="editEntries(${index})">edit</button>
+          <button onclick="editEntries(${index})">Edit</button>
           <button onclick="deleteData(${index})">Delete</button>
         </td>
       </tr>`;
@@ -101,7 +109,15 @@ const deleteData = (rowCount) => {
     checkData();
     insertDataToAdvTable();
   }
+
+  // let a = document.querySelector("[value='Delete all']");
+  // if (setData.length !== 0) {
+  //   a.style.display = 'block';
+  // } else {
+  //   a.style.display = 'none';
+  // }
 };
+console.log(setData.length !== 0);
 
 //###################### Edit entries ######################################################
 
@@ -237,7 +253,7 @@ const insertDataToAdvTable = () => {
 <tr>
 <th>Actions</th>
 <!-- <td>
-  <button onclick="">edit</button>
+  <button onclick="">Edit</button>
   <button class="btn">Delete</button>
 </td> -->
 </tr>
@@ -260,7 +276,7 @@ const insertDataToAdvTable = () => {
 
       td.innerText = val[i] || 'empty';
       if (i == 6) {
-        td.innerHTML = `  <button onclick="editEntries(${index})">edit</button>
+        td.innerHTML = `  <button onclick="editEntries(${index})">Edit</button>
         <button class="btn" onclick="deleteData(${index})">Delete</button>`;
       }
 
@@ -293,11 +309,25 @@ const sortEntriesAccToDob = () => {
         <td>${val.hobbies}</td>
 
         <td>
-          <button onclick="editEntries(${index})">edit</button>
+          <button onclick="editEntries(${index})">Edit</button>
           <button onclick="deleteData(${index})">Delete</button>
         </td>
       </tr>`;
   });
 
   tbody.innerHTML = previousData;
+};
+
+const deleteAll = () => {
+  const permsisson = confirm('Are you sure');
+
+  if (permsisson) {
+    alert('pakku ne bhai??');
+    alert('Haji ek var pachu vichari Leje pachi ni keto');
+    alert('chheli var puchu chu bhai vichari lai');
+
+    localStorage.clear();
+    checkData();
+    insertDataToAdvTable();
+  }
 };

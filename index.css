@@ -79,7 +79,6 @@ td {
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow: auto;
 }
 
 .container-basic-table > table {
@@ -92,12 +91,12 @@ tbody > tr > td:last-child {
   justify-content: center;
 }
 
-/* .container-basic-table {
+.container-basic-table {
   display: flex;
   flex-direction: column;
   align-items: center;
   overflow: auto;
-} */
+}
 
 .container-basic-table > table {
   width: 96%;
@@ -113,6 +112,11 @@ tbody > tr > td:last-child {
 
 .advance-table {
   overflow: auto;
+}
+
+[value='Delete all'] {
+  cursor: pointer;
+  background-color: red;
 }
 
 /* ###### searchBox #########  */

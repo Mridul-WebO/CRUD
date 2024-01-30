@@ -49,7 +49,7 @@
           <div class="row">
             <div class="col">Phone:</div>
             <div class="col">
-              <input type="tel" name="phone" id="phone" placeholder="Enter phone" />
+              <input type="tel" name="phone" id="phone" placeholder="Enter phone" maxlength="10" minlength="10" />
             </div>
           </div>
           <div class="row">
@@ -91,6 +91,7 @@
           <input type="text" placeholder="Search entries..." onkeyup="searchEntries(this.value.toLowerCase())" />
           <label for="sortEntries">Sort</label>
           <input type="checkbox" name="sortEntries" id="sortEntries" onchange="sortEntriesAccToDob()" />
+          <!-- <input onclick="deleteAll()" type="button" value="Delete all" /> -->
         </div>
       </div>
 
