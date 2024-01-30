@@ -1,0 +1,132 @@
+/* ###### Add Employee Form Styling #########  */
+
+.main-container>h3 {
+  text-align: center;
+}
+
+#navbar-container {
+  border: 2px solid #337ab7;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  background-color: #337ab7;
+  color: white;
+  height: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.container {
+  border: 1px solid #337ab7;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  margin: 5px;
+}
+
+.row:nth-child(6) {
+  /* display: flex; */
+  align-items: normal
+}
+
+
+.col {
+  margin: 5px;
+}
+
+.col:nth-child(1) {
+  flex: 1;
+  text-align: end;
+}
+
+.col:nth-child(2) {
+  flex: 4;
+}
+
+input {
+  width: 90%;
+  padding: 5px;
+}
+
+[type='radio'],
+[type='checkbox'] {
+  width: fit-content;
+}
+
+button {
+  background-color: #337ab7;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  border-color: #337ab7;
+  margin-right: 10px;
+}
+
+/* ###### Basic Table Styling #########  */
+
+table,
+th,
+td {
+  border: 2px solid lightgrey;
+  border-collapse: collapse;
+  text-align: left;
+  padding: 5px;
+}
+
+.container-basic-table {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container-basic-table>table {
+  width: 96%;
+  margin: 10px;
+}
+
+tbody>tr>td:last-child {
+  display: flex;
+  justify-content: center;
+}
+
+.container-basic-table {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container-basic-table>table {
+  width: 96%;
+  margin: 10px;
+}
+
+tbody>tr>td:last-child {
+  display: flex;
+  justify-content: center;
+}
+
+/* advnace table */
+
+.advance-table {
+  overflow: auto;
+}
+
+/* ###### searchBox #########  */
+
+#searchBox {
+  margin-right: 25px;
+  display: flex;
+  align-items: center;
+}
+
+#searchBox>input {
+  border-radius: 5px;
+  margin-right: 20px;
+}
+
+[for="sortEntries"] {
+  vertical-align: bottom;
+}
