@@ -1,5 +1,9 @@
 /* ###### Add Employee Form Styling #########  */
 
+* {
+  scroll-behavior: smooth;
+}
+
 .main-container > h3 {
   text-align: center;
 }

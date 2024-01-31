@@ -1,5 +1,7 @@
+// Regrex expressions
 const regrexEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 const regrexPhone = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+
 const dummyData = localStorage.getItem('dummyData') ? JSON.parse(localStorage.getItem('dummyData')) : [];
 let tbody = document.querySelector('tbody');
 
@@ -116,6 +118,8 @@ const createData = () => {
     });
     // hobbies = ""
     insertDataToAdvTable();
+    alert('Data submitted successfully!!');
+    window.scrollTo(0, document.body.scrollHeight);
   }
   // if (setData.length !== 0) {
   //   let a = document.querySelector("[value='Delete all']");
@@ -123,8 +127,19 @@ const createData = () => {
   // }
 };
 
+const deleteAllBtn = document.querySelector("[value='Delete all']");
+
 const checkData = () => {
   setData = JSON.parse(localStorage.getItem('dummyData'));
+
+  // setData.length !==0 && deleteAll.style.display = "block"
+  console.log(setData);
+
+  if (setData !== null && setData?.length !== 0) {
+    deleteAllBtn.style.display = 'block';
+  } else {
+    deleteAllBtn.style.display = 'none';
+  }
 
   let previousData = '';
 
@@ -176,7 +191,7 @@ const deleteData = (rowCount) => {
   //   a.style.display = 'none';
   // }
 };
-console.log(setData.length !== 0);
+// console.log(setData.length !== 0);
 
 //###################### Edit entries ######################################################
 
