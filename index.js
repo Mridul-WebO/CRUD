@@ -13,9 +13,68 @@ let gender = document.querySelector('input[name="gender"]:checked');
 
 // console.log(gender.value);
 
-let hobbies = [];
+//################## Advance table JS ##############################
+
+const insertDataToAdvTable = () => {
+  const advTableContent = document.querySelector('#adv tbody');
+  advTableContent.innerHTML = `
+
+  <tr>
+  <th>Name</th>
+</tr>
+<tr>
+<th>Gender</th>
+</tr>
+<tr>
+<th>DOB</th>
+</tr>
+<tr>
+<th>Email</th>
+</tr>
+<tr>
+<th>Phone</th>
+</tr>
+<tr>
+<th>Hobbies</th>
+</tr>
+<tr>
+<th>Actions</th>
+<!-- <td>
+  <button onclick="">Edit</button>
+  <button class="btn">Delete</button>
+</td> -->
+</tr>
+
+
+  `;
+  const trs = document.querySelectorAll('#adv tr');
+  // setData = JSON.parse(localStorage.getItem("dummyData"));
+  // console.log("setData", setData);
+
+  setData?.forEach((item, index) => {
+    let val = Object.values(item);
+
+    for (let i = 0; i < 7; i++) {
+      // if (trs[i])sss
+
+      // console.log(val);
+      let td = document.createElement('td');
+      td.classList.add(index);
+
+      td.innerText = val[i] || 'empty';
+      if (i == 6) {
+        td.innerHTML = `  <button onclick="editEntries(${index})">Edit</button>
+        <button class="btn" onclick="deleteData(${index})">Delete</button>`;
+      }
+
+      trs[i].appendChild(td);
+    }
+  });
+};
+insertDataToAdvTable();
 
 //###################### Create entries ######################################################
+let hobbies = [];
 
 const createData = () => {
   // console.log('gender', gender.value);
@@ -225,66 +284,6 @@ const searchEntries = (e) => {
 
   tbody.innerHTML = previousData;
 };
-
-//################## Advance table JS ##############################
-
-const insertDataToAdvTable = () => {
-  const advTableContent = document.querySelector('#adv tbody');
-  advTableContent.innerHTML = `
-
-  <tr>
-  <th>Name</th>
-</tr>
-<tr>
-<th>Gender</th>
-</tr>
-<tr>
-<th>DOB</th>
-</tr>
-<tr>
-<th>Email</th>
-</tr>
-<tr>
-<th>Phone</th>
-</tr>
-<tr>
-<th>Hobbies</th>
-</tr>
-<tr>
-<th>Actions</th>
-<!-- <td>
-  <button onclick="">Edit</button>
-  <button class="btn">Delete</button>
-</td> -->
-</tr>
-
-
-  `;
-  const trs = document.querySelectorAll('#adv tr');
-  // setData = JSON.parse(localStorage.getItem("dummyData"));
-  // console.log("setData", setData);
-
-  setData?.forEach((item, index) => {
-    let val = Object.values(item);
-
-    for (let i = 0; i < 7; i++) {
-      // if (trs[i])sss
-
-      // console.log(val);
-      let td = document.createElement('td');
-      td.classList.add(index);
-
-      td.innerText = val[i] || 'empty';
-      if (i == 6) {
-        td.innerHTML = `  <button onclick="editEntries(${index})">Edit</button>
-        <button class="btn" onclick="deleteData(${index})">Delete</button>`;
-      }
-
-      trs[i].appendChild(td);
-    }
-  });
-};
-insertDataToAdvTable();
 
 const sortEntriesAccToDob = () => {
   const sortBox = document.querySelector("[name='sortEntries']");
