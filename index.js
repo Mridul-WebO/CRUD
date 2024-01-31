@@ -1,6 +1,7 @@
 // Regrex expressions
-const regrexEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-const regrexPhone = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+// const regrexEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+const regrexEmail = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{1,5})$/;
+// const regrexPhone = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
 
 const dummyData = localStorage.getItem('dummyData') ? JSON.parse(localStorage.getItem('dummyData')) : [];
 let tbody = document.querySelector('tbody');
@@ -79,6 +80,7 @@ insertDataToAdvTable();
 let hobbies = [];
 
 const createData = () => {
+  console.log('helllllloooo chal nna');
   // console.log('gender', gender.value);
   hobbies = [];
 
@@ -95,8 +97,10 @@ const createData = () => {
   // if (phone.value.match(regrexPhone)) {
 
   // }
+  console.log('nahi gaya andar');
 
   if (name.value !== '' && gender.value !== '' && dob.value !== '' && email.value.match(regrexEmail)) {
+    console.log('gaya andar');
     dummyData.push({
       name: name.value,
       gender: gender.value,
