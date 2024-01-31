@@ -139,3 +139,10 @@ tbody > tr > td:last-child {
 [for='sortEntries'] {
   vertical-align: bottom;
 }
+
+/* error Handling */
+
+[class^='error'] {
+  color: red;
+  margin: 5px 0px 0px 5px;
+}

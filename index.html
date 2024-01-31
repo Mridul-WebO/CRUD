@@ -22,28 +22,32 @@
           <div class="row">
             <div class="col">Name:</div>
             <div class="col">
-              <input type="text" name="name" id="name" placeholder="Enter name" minlength="4" maxlength="20" required />
+              <input type="text" name="name" id="name" placeholder="Enter name" minlength="4" maxlength="20" />
+              <div class="error-name">error</div>
             </div>
           </div>
           <div class="row">
             <div class="col">Gender:</div>
             <div class="col">
-              <input type="radio" name="gender" id="male" value="Male" checked required />
+              <input type="radio" name="gender" id="male" value="Male" checked />
               <label for="male"> Male</label>
-              <input type="radio" name="gender" id="female" value="Female" required />
+              <input type="radio" name="gender" id="female" value="Female" />
               <label for="female"> Female</label>
+              <div class="error-gender">error</div>
             </div>
           </div>
           <div class="row">
             <div class="col">Date of Birth:</div>
             <div class="col">
-              <input type="date" name="date" id="dob" required />
+              <input type="date" name="date" id="dob" />
+              <div class="error-dob">error</div>
             </div>
           </div>
           <div class="row">
             <div class="col">Email:</div>
             <div class="col">
-              <input type="email" name="email" id="email" placeholder="Enter email" required />
+              <input type="email" name="email" id="email" placeholder="Enter email" />
+              <div class="error-email">error</div>
             </div>
           </div>
           <div class="row">
