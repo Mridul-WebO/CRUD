@@ -6,6 +6,8 @@ const regrexEmail = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{1,5})$/
 const dummyData = localStorage.getItem('dummyData') ? JSON.parse(localStorage.getItem('dummyData')) : [];
 let tbody = document.querySelector('tbody');
 
+let submitDataBtn = document.getElementById('submitData');
+
 let setData = localStorage.getItem('dummyData') ? JSON.parse(localStorage.getItem('dummyData')) : [];
 console.log(setData);
 // console.log(setData);
@@ -80,21 +82,71 @@ insertDataToAdvTable();
 //###################### Create entries ######################################################
 let hobbies = [];
 
-const errorHandling = () => {
+const errorHandling = (fieldName) => {
+  let flag = false;
+  // console.log(fieldName);
   // name, gender, dob, email
 
-  if (!name.value.match(/^[a-zA-Z0-9]{4,20}$/)) {
-    let nameFieldLabel = document.querySelector("[for='name']");
-    nameFieldLabel.innerText =
-      "'Name field should be between 4 to 20 characters, including only alphanumeric characters.';";
-    nameFieldLabel.focus();
+  let nameFieldLabel = document.querySelector("[class='error-name']");
+  let dobFieldLabel = document.querySelector("[class='error-dob']");
+  let emailFieldLabel = document.querySelector("[class='error-email']");
 
-    return;
+  switch (fieldName) {
+    case 'name':
+      if (!name.value.match(/^[a-zA-Z0-9]{4,20}$/)) {
+        nameFieldLabel.innerText =
+          'Name field should be between 4 to 20 characters, including only alphanumeric characters';
+        nameFieldLabel.focus();
+
+        flag = false;
+      } else {
+        nameFieldLabel.innerText = '';
+        flag = true;
+      }
+
+      break;
+
+    case 'date':
+      if (!dob.value && fieldName === 'date') {
+        console.log('hello');
+
+        dobFieldLabel.innerText = 'Date of birth is required';
+        dobFieldLabel.focus();
+
+        flag = false;
+      } else {
+        dobFieldLabel.innerText = '';
+        flag = true;
+      }
+
+      break;
+
+    case 'email':
+      if (!email.value.match(regrexEmail) && fieldName === 'email') {
+        emailFieldLabel.innerText = 'Invalid Email';
+        emailFieldLabel.focus();
+
+        flag = false;
+      } else {
+        emailFieldLabel.innerText = '';
+        flag = true;
+      }
+
+      break;
+
+    default:
+      return true;
   }
-  return 'correct';
+  if (flag) {
+    console.log(flag);
+    console.log('hello');
+    submitDataBtn.disabled = false;
+    return flag;
+  }
 };
 
 const createData = () => {
+  // console.log(flag);
   console.log(errorHandling());
   // console.log('gender', gender.value);
   hobbies = [];
@@ -106,8 +158,8 @@ const createData = () => {
   // console.log(getHobbies);
   for (let x of getHobbies) {
     hobbies.push(x.value);
-    // console.log(x);
   }
+  console.log('hobbies', hobbies);
 
   if (name.value !== '' && gender.value !== '' && dob.value !== '' && email.value.match(regrexEmail)) {
     setData.push({
@@ -127,14 +179,17 @@ const createData = () => {
     email.value = null;
     document.querySelector("[value='Male']").checked = true;
     phone.value = null;
+
     hobbies?.forEach((val, index) => {
+      console.log(val);
       document.getElementById(`${val}`).checked = false;
     });
+    submitDataBtn.disabled = true;
 
     // hobbies = ""
     insertDataToAdvTable();
-    // alert('Data submitted successfully!!');
-    // window.scrollTo(0, document.body.scrollHeight);
+    alert('Data submitted successfully!!');
+    window.scrollTo(0, document.body.scrollHeight);
   }
   // if (setData.length !== 0) {
   //   let a = document.querySelector("[value='Delete all']");
@@ -226,13 +281,16 @@ const editEntries = (rowCount) => {
   email.value = dataToEdit?.email;
   phone.value = dataToEdit?.phone;
 
-  dataToEdit?.hobbies?.forEach((val) => {
+  dataToEdit?.hobbies.forEach((val) => {
     document.getElementById(`${val}`).checked = true;
   });
 
   // changing the submit button to update
+  errorHandling();
   document.querySelector("[onclick='createData()']").style.display = 'none';
+
   let updateDataBtn = document.getElementById('updateDataBtn');
+  console.log(updateDataBtn);
   updateDataBtn.style.display = 'block';
   updateDataBtn.value = rowCount;
 };

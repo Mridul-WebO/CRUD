@@ -22,8 +22,8 @@
           <div class="row">
             <div class="col">Name:</div>
             <div class="col">
-              <input type="text" name="name" id="name" placeholder="Enter name" minlength="4" maxlength="20" />
-              <div class="error-name">error</div>
+              <input type="text" name="name" id="name" placeholder="Enter name" onchange="errorHandling(this.name)" />
+              <div class="error-name"></div>
             </div>
           </div>
           <div class="row">
@@ -33,50 +33,56 @@
               <label for="male"> Male</label>
               <input type="radio" name="gender" id="female" value="Female" />
               <label for="female"> Female</label>
-              <div class="error-gender">error</div>
+              <div class="error-gender"></div>
             </div>
           </div>
           <div class="row">
             <div class="col">Date of Birth:</div>
             <div class="col">
-              <input type="date" name="date" id="dob" />
-              <div class="error-dob">error</div>
+              <input type="date" name="date" id="dob" onchange="errorHandling(this.name)" />
+              <div class="error-dob"></div>
             </div>
           </div>
           <div class="row">
             <div class="col">Email:</div>
             <div class="col">
-              <input type="email" name="email" id="email" placeholder="Enter email" />
-              <div class="error-email">error</div>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="Enter email"
+                onchange="errorHandling(this.name)"
+              />
+              <div class="error-email"></div>
             </div>
           </div>
           <div class="row">
             <div class="col">Phone:</div>
             <div class="col">
-              <input type="tel" name="phone" id="phone" placeholder="Enter phone" maxlength="10" minlength="10" />
+              <input type="tel" name="phone" id="phone" placeholder="Enter phone" />
             </div>
           </div>
           <div class="row">
             <div class="col">Hobbies:</div>
             <div class="col">
               <div class="check">
-                <input type="checkbox" name="cricket" id="cricket" value="Cricket" />
-                <label for="cricket">Cricket</label>
+                <input type="checkbox" name="cricket" id="Cricket" value="Cricket" />
+                <label for="Cricket">Cricket</label>
               </div>
               <div class="check">
-                <input type="checkbox" name="chess" id="chess" value="Chess" />
-                <label for="chess">Chess</label>
+                <input type="checkbox" name="chess" id="Chess" value="Chess" />
+                <label for="Chess">Chess</label>
               </div>
               <div class="check">
-                <input type="checkbox" name="music" id="music" value="Music" />
-                <label for="music">Music</label>
+                <input type="checkbox" name="music" id="Music" value="Music" />
+                <label for="Music">Music</label>
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col"></div>
             <div class="col">
-              <button onclick="createData()">Submit</button>
+              <button id="submitData" disabled onclick="createData()">Submit</button>
               <button style="display: none" id="updateDataBtn">Update</button>
             </div>
           </div>
