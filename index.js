@@ -152,7 +152,7 @@ checkData();
 
 const deleteData = (rowCount) => {
   // console.log("setData", setData);
-  console.log('rowCount', rowCount);
+  // console.log('rowCount', rowCount);
 
   let permissionToDeleteEntry = confirm('Are you Sure??');
   if (permissionToDeleteEntry) {
@@ -160,7 +160,7 @@ const deleteData = (rowCount) => {
       // console.log(index);
       return index !== rowCount;
     });
-    console.log(updatedData);
+    // console.log(updatedData);
     let row = document.getElementById(rowCount);
     row.remove();
 
@@ -182,11 +182,11 @@ console.log(setData.length !== 0);
 
 const editEntries = (rowCount) => {
   document.getElementById('jumpToThis').scrollIntoView();
-  console.log(rowCount);
+  // console.log(rowCount);
 
   setData = JSON.parse(localStorage.getItem('dummyData'));
   let dataToEdit = setData[rowCount];
-  console.log('datatoedit', dataToEdit);
+  // console.log('datatoedit', dataToEdit);
 
   // console.log(dataToEdit.gender);
 
@@ -233,7 +233,7 @@ updateDataBtn.addEventListener('click', (val) => {
       hobbies: hobbies || 'null',
     };
 
-    console.log(newData);
+    // console.log(newData);
 
     const previousData = JSON.parse(localStorage.getItem('dummyData'));
     previousData.splice(rowCount, 1, newData);
@@ -241,7 +241,7 @@ updateDataBtn.addEventListener('click', (val) => {
     checkData();
     insertDataToAdvTable();
 
-    console.log(previousData);
+    // console.log(previousData);
 
     name.value = null;
     dob.value = null;
