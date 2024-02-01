@@ -1,15 +1,14 @@
 // Regrex expressions
 
 const regrexEmail = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{1,5})$/;
-// const regrexPhone = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
-
+const regrexPhone = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/;
 const dummyData = localStorage.getItem('dummyData') ? JSON.parse(localStorage.getItem('dummyData')) : [];
 let tbody = document.querySelector('tbody');
 
 let submitDataBtn = document.getElementById('submitData');
 
 let setData = localStorage.getItem('dummyData') ? JSON.parse(localStorage.getItem('dummyData')) : [];
-console.log(setData);
+// console.log(setData);
 
 let name = document.getElementById('name');
 let dob = document.getElementById('dob');
@@ -75,6 +74,17 @@ insertDataToAdvTable();
 //###################### Create entries ######################################################
 let hobbies = [];
 
+const checkPhoneNumber = () => {
+  let phoneFieldLabel = document.querySelector("[class='error-phone']");
+  if (!phone.value.match(/^\d{10}$/)) {
+    phoneFieldLabel.innerText = 'Phone should be a number field with 10 digits.';
+    return false;
+  } else {
+    phoneFieldLabel.innerText = '';
+    return true;
+  }
+};
+
 const errorHandling = (fieldName) => {
   let flag = []; //will contain all validation boolean values
 
@@ -85,6 +95,9 @@ const errorHandling = (fieldName) => {
   let emailFieldLabel = document.querySelector("[class='error-email']");
 
   switch (fieldName) {
+    case 'phone':
+      checkPhoneNumber();
+      break;
     case 'name':
       if (!name.value.trim().match(/^[a-zA-Z0-9 ]{4,20}$/)) {
         nameFieldLabel.innerText =
@@ -101,11 +114,12 @@ const errorHandling = (fieldName) => {
 
     case 'date':
       if (!dob.value && fieldName === 'date') {
-        console.log('hello');
-
         dobFieldLabel.innerText = 'Date of birth is required';
         dobFieldLabel.focus();
 
+        flag.splice(1, 0, false);
+      } else if (new Date(dob.value) >= new Date()) {
+        dobFieldLabel.innerText = 'Future dates are not allowed';
         flag.splice(1, 0, false);
       } else {
         dobFieldLabel.innerText = '';
@@ -139,16 +153,25 @@ const errorHandling = (fieldName) => {
         flag.splice(0, 0, true);
       }
       if (!dob.value) {
+        console.log('flag2');
         dobFieldLabel.innerText = 'Date of birth is required';
         dobFieldLabel.focus();
 
+        flag.splice(1, 0, false);
+      } else if (new Date(dob.value) >= new Date()) {
+        dobFieldLabel.innerText = 'Future dates are not allowed';
         flag.splice(1, 0, false);
       } else {
         dobFieldLabel.innerText = '';
         flag.splice(1, 0, true);
       }
+
       if (!email.value.match(regrexEmail)) {
-        emailFieldLabel.innerText = 'Invalid Email';
+        if (email.value === '') {
+          emailFieldLabel.innerText = 'Email is required';
+        } else {
+          emailFieldLabel.innerText = 'Invalid Email';
+        }
         emailFieldLabel.focus();
 
         flag.splice(2, 0, false);
@@ -171,9 +194,16 @@ const createData = () => {
   for (let x of getHobbies) {
     hobbies.push(x.value);
   }
+  // console.log(pushData);
 
   // if (name.value !== '' && gender.value !== '' && dob.value !== '' && email.value.match(regrexEmail)) {
-  if (pushData) {
+
+  let phoneNumberIsValid = true;
+  if (phone.value) {
+    phoneNumberIsValid = checkPhoneNumber();
+  }
+
+  if (pushData && phoneNumberIsValid) {
     setData.push({
       name: name.value,
       gender: gender.value,
@@ -198,7 +228,7 @@ const createData = () => {
 
     insertDataToAdvTable();
     alert('Data submitted successfully!!');
-    window.scrollTo(0, document.body.scrollHeight);
+    // window.scrollTo(0, document.body.scrollHeight);
   }
 };
 
@@ -332,7 +362,7 @@ updateDataBtn.addEventListener('click', (val) => {
     updateDataBtn.style.display = 'none';
 
     alert('Your data has been updated successfully!!');
-    window.scrollTo(0, document.body.scrollHeight);
+    // window.scrollTo(0, document.body.scrollHeight);
   }
 });
 
@@ -348,7 +378,7 @@ cancelUpdateDataBtn.addEventListener('click', () => {
   submitdataBtn.style.display = 'block';
   cancelUpdateDataBtn.style.display = 'none';
   updateDataBtn.style.display = 'none';
-  window.scrollTo(0, document.body.scrollHeight);
+  // window.scrollTo(0, document.body.scrollHeight);
 });
 
 //###################### Search entries ######################################################
@@ -415,10 +445,6 @@ const deleteAll = () => {
   const permsisson = confirm('Are you sure');
 
   if (permsisson) {
-    alert('pakku ne bhai??');
-    alert('Haji ek var pachu vichari Leje pachi ni keto');
-    alert('chheli var puchu chu bhai vichari lai');
-
     localStorage.clear();
     setData = [];
     console.log(setData);
@@ -427,3 +453,7 @@ const deleteAll = () => {
     insertDataToAdvTable();
   }
 };
+
+// const datePicker = document.querySelector('[type="date"]');
+
+// datePicker.setAttribute('max', new Date());
