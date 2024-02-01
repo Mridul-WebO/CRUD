@@ -254,6 +254,9 @@ const deleteData = (rowCount) => {
 };
 
 //###################### Edit entries ######################################################
+const submitdataBtn = document.getElementById('submitData');
+const updateDataBtn = document.getElementById('updateDataBtn');
+const cancelUpdateDataBtn = document.getElementById('cancelUpdateDataBtn');
 
 const editEntries = (rowCount) => {
   document.getElementById('jumpToThis').scrollIntoView();
@@ -274,12 +277,14 @@ const editEntries = (rowCount) => {
 
   // changing the submit button to update
   errorHandling();
-  document.getElementById('submitData').style.display = 'none';
+  submitDataBtn.style.display = 'none';
 
-  let updateDataBtn = document.getElementById('updateDataBtn');
-  console.log(updateDataBtn);
-  updateDataBtn.style.display = 'block';
+  // console.log(updateDataBtn);
+
+  updateDataBtn.style.display = 'inline';
   updateDataBtn.value = rowCount;
+
+  cancelUpdateDataBtn.style.display = 'inline';
 };
 
 updateDataBtn.addEventListener('click', (val) => {
@@ -320,6 +325,7 @@ updateDataBtn.addEventListener('click', (val) => {
       previousData[rowCount].hobbies.forEach((val) => {
         document.getElementById(`${val}`).checked = false;
       });
+    document.getElementById('cancelUpdateDataBtn').style.display = 'none';
 
     document.querySelector("[onclick='createData()']").style.display = 'block';
     let updateDataBtn = document.getElementById('updateDataBtn');
@@ -328,6 +334,21 @@ updateDataBtn.addEventListener('click', (val) => {
     alert('Your data has been updated successfully!!');
     window.scrollTo(0, document.body.scrollHeight);
   }
+});
+
+cancelUpdateDataBtn.addEventListener('click', () => {
+  name.value = null;
+  dob.value = null;
+  email.value = null;
+  phone.value = null;
+  document.querySelectorAll('[type=checkbox]').forEach((val) => {
+    // console.log(val);
+    val.checked = false;
+  });
+  submitdataBtn.style.display = 'block';
+  cancelUpdateDataBtn.style.display = 'none';
+  updateDataBtn.style.display = 'none';
+  window.scrollTo(0, document.body.scrollHeight);
 });
 
 //###################### Search entries ######################################################
