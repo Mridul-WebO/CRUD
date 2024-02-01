@@ -1,5 +1,5 @@
 // Regrex expressions
-// const regrexEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
 const regrexEmail = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{1,5})$/;
 // const regrexPhone = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
 
@@ -10,14 +10,12 @@ let submitDataBtn = document.getElementById('submitData');
 
 let setData = localStorage.getItem('dummyData') ? JSON.parse(localStorage.getItem('dummyData')) : [];
 console.log(setData);
-// console.log(setData);
+
 let name = document.getElementById('name');
 let dob = document.getElementById('dob');
 let email = document.getElementById('email');
 let phone = document.getElementById('phone');
 let gender = document.querySelector('input[name="gender"]:checked');
-
-// console.log(gender.value);
 
 //################## Advance table JS ##############################
 
@@ -54,16 +52,11 @@ const insertDataToAdvTable = () => {
 
   `;
   const trs = document.querySelectorAll('#adv tr');
-  // setData = JSON.parse(localStorage.getItem("dummyData"));
-  // console.log("setData", setData);
 
   setData?.forEach((item, index) => {
     let val = Object.values(item);
 
     for (let i = 0; i < 7; i++) {
-      // if (trs[i])sss
-
-      // console.log(val);
       let td = document.createElement('td');
       td.classList.add(index);
 
@@ -83,8 +76,8 @@ insertDataToAdvTable();
 let hobbies = [];
 
 const errorHandling = (fieldName) => {
-  let flag = false;
-  // console.log(fieldName);
+  let flag = []; //will contain all validation boolean values
+
   // name, gender, dob, email
 
   let nameFieldLabel = document.querySelector("[class='error-name']");
@@ -98,10 +91,10 @@ const errorHandling = (fieldName) => {
           'Name field should be between 4 to 20 characters, including only alphanumeric characters';
         nameFieldLabel.focus();
 
-        flag = false;
+        flag.splice(0, 0, false);
       } else {
         nameFieldLabel.innerText = '';
-        flag = true;
+        flag.splice(0, 0, true);
       }
 
       break;
@@ -113,10 +106,10 @@ const errorHandling = (fieldName) => {
         dobFieldLabel.innerText = 'Date of birth is required';
         dobFieldLabel.focus();
 
-        flag = false;
+        flag.splice(1, 0, false);
       } else {
         dobFieldLabel.innerText = '';
-        flag = true;
+        flag.splice(1, 0, true);
       }
 
       break;
@@ -126,42 +119,61 @@ const errorHandling = (fieldName) => {
         emailFieldLabel.innerText = 'Invalid Email';
         emailFieldLabel.focus();
 
-        flag = false;
+        flag.splice(2, 0, false);
       } else {
         emailFieldLabel.innerText = '';
-        flag = true;
+        flag.splice(2, 0, true);
       }
 
       break;
 
     default:
-      return true;
-  }
-  if (flag) {
-    console.log(flag);
-    console.log('hello');
-    submitDataBtn.disabled = false;
-    return flag;
+      if (!name.value.match(/^[a-zA-Z0-9]{4,20}$/)) {
+        nameFieldLabel.innerText =
+          'Name field should be between 4 to 20 characters, including only alphanumeric characters';
+        nameFieldLabel.focus();
+
+        flag.splice(0, 0, false);
+      } else {
+        nameFieldLabel.innerText = '';
+        flag.splice(0, 0, true);
+      }
+      if (!dob.value) {
+        dobFieldLabel.innerText = 'Date of birth is required';
+        dobFieldLabel.focus();
+
+        flag.splice(1, 0, false);
+      } else {
+        dobFieldLabel.innerText = '';
+        flag.splice(1, 0, true);
+      }
+      if (!email.value.match(regrexEmail)) {
+        emailFieldLabel.innerText = 'Invalid Email';
+        emailFieldLabel.focus();
+
+        flag.splice(2, 0, false);
+      } else {
+        emailFieldLabel.innerText = '';
+        flag.splice(2, 0, true);
+      }
+      return flag;
   }
 };
 
 const createData = () => {
-  // console.log(flag);
-  console.log(errorHandling());
-  // console.log('gender', gender.value);
+  const pushData = errorHandling().every((item) => item === true);
   hobbies = [];
 
   gender = document.querySelector('input[name="gender"]:checked');
 
-  // console.log(gender.value);
   let getHobbies = document.querySelectorAll('input[type="checkbox"]:checked');
-  // console.log(getHobbies);
+
   for (let x of getHobbies) {
     hobbies.push(x.value);
   }
-  console.log('hobbies', hobbies);
 
-  if (name.value !== '' && gender.value !== '' && dob.value !== '' && email.value.match(regrexEmail)) {
+  // if (name.value !== '' && gender.value !== '' && dob.value !== '' && email.value.match(regrexEmail)) {
+  if (pushData) {
     setData.push({
       name: name.value,
       gender: gender.value,
@@ -180,30 +192,20 @@ const createData = () => {
     document.querySelector("[value='Male']").checked = true;
     phone.value = null;
 
-    hobbies?.forEach((val, index) => {
-      console.log(val);
+    hobbies?.forEach((val) => {
       document.getElementById(`${val}`).checked = false;
     });
-    submitDataBtn.disabled = true;
 
-    // hobbies = ""
     insertDataToAdvTable();
     alert('Data submitted successfully!!');
     window.scrollTo(0, document.body.scrollHeight);
   }
-  // if (setData.length !== 0) {
-  //   let a = document.querySelector("[value='Delete all']");
-  //   a.style.display = 'block';
-  // }
 };
 
 const deleteAllBtn = document.querySelector("[value='Delete all']");
 
 const checkData = () => {
   setData = localStorage.getItem('dummyData') ? JSON.parse(localStorage.getItem('dummyData')) : [];
-
-  // setData.length !==0 && deleteAll.style.display = "block"
-  // console.log(setData);
 
   if (setData !== null && setData?.length !== 0) {
     deleteAllBtn.style.display = 'block';
@@ -236,16 +238,12 @@ checkData();
 //###################### Delete entries ######################################################
 
 const deleteData = (rowCount) => {
-  // console.log("setData", setData);
-  // console.log('rowCount', rowCount);
-
   let permissionToDeleteEntry = confirm('Are you Sure??');
   if (permissionToDeleteEntry) {
     const updatedData = setData.filter((item, index) => {
-      // console.log(index);
       return index !== rowCount;
     });
-    // console.log(updatedData);
+
     let row = document.getElementById(rowCount);
     row.remove();
 
@@ -253,27 +251,15 @@ const deleteData = (rowCount) => {
     checkData();
     insertDataToAdvTable();
   }
-
-  // let a = document.querySelector("[value='Delete all']");
-  // if (setData.length !== 0) {
-  //   a.style.display = 'block';
-  // } else {
-  //   a.style.display = 'none';
-  // }
 };
-// console.log(setData.length !== 0);
 
 //###################### Edit entries ######################################################
 
 const editEntries = (rowCount) => {
   document.getElementById('jumpToThis').scrollIntoView();
-  // console.log(rowCount);
 
   setData = JSON.parse(localStorage.getItem('dummyData'));
   let dataToEdit = setData[rowCount];
-  // console.log('datatoedit', dataToEdit);
-
-  // console.log(dataToEdit.gender);
 
   name.value = dataToEdit?.name;
   document.querySelector(`[value="${dataToEdit.gender}"]`).checked = 'true';
@@ -301,12 +287,9 @@ updateDataBtn.addEventListener('click', (val) => {
 
   if (name.value !== '' && gender.value !== '' && dob.value !== '' && email.value.match(regrexEmail)) {
     gender = document.querySelector('input[name="gender"]:checked');
-    // console.log(rowNumber);
-    // console.log(gender.value);
 
     hobbies = [];
 
-    // console.log(gender.value);
     let getHobbies = document.querySelectorAll('input[type="checkbox"]:checked');
     for (let x of getHobbies) {
       hobbies.push(x.value);
@@ -321,15 +304,11 @@ updateDataBtn.addEventListener('click', (val) => {
       hobbies: hobbies || 'null',
     };
 
-    // console.log(newData);
-
     const previousData = JSON.parse(localStorage.getItem('dummyData'));
     previousData.splice(rowCount, 1, newData);
     localStorage.setItem('dummyData', JSON.stringify(previousData));
     checkData();
     insertDataToAdvTable();
-
-    // console.log(previousData);
 
     name.value = null;
     dob.value = null;
@@ -410,14 +389,14 @@ const deleteAll = () => {
   const permsisson = confirm('Are you sure');
 
   if (permsisson) {
-    // alert('pakku ne bhai??');
-    // alert('Haji ek var pachu vichari Leje pachi ni keto');
-    // alert('chheli var puchu chu bhai vichari lai');
+    alert('pakku ne bhai??');
+    alert('Haji ek var pachu vichari Leje pachi ni keto');
+    alert('chheli var puchu chu bhai vichari lai');
 
     localStorage.clear();
     setData = [];
     console.log(setData);
-    // console.log(setData);
+
     checkData();
     insertDataToAdvTable();
   }
