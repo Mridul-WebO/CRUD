@@ -86,7 +86,7 @@ const errorHandling = (fieldName) => {
 
   switch (fieldName) {
     case 'name':
-      if (!name.value.match(/^[a-zA-Z0-9]{4,20}$/)) {
+      if (!name.value.match(/^[a-zA-Z0-9 ]{4,20}$/)) {
         nameFieldLabel.innerText =
           'Name field should be between 4 to 20 characters, including only alphanumeric characters';
         nameFieldLabel.focus();
@@ -128,7 +128,7 @@ const errorHandling = (fieldName) => {
       break;
 
     default:
-      if (!name.value.match(/^[a-zA-Z0-9]{4,20}$/)) {
+      if (!name.value.match(/^[a-zA-Z0-9 ]{4,20}$/)) {
         nameFieldLabel.innerText =
           'Name field should be between 4 to 20 characters, including only alphanumeric characters';
         nameFieldLabel.focus();
