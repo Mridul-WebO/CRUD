@@ -86,7 +86,7 @@ const errorHandling = (fieldName) => {
 
   switch (fieldName) {
     case 'name':
-      if (!name.value.match(/^[a-zA-Z0-9]{4,20}$/)) {
+      if (!name.value.match(/^[a-zA-Z0-9 ]{4,20}$/)) {
         nameFieldLabel.innerText =
           'Name field should be between 4 to 20 characters, including only alphanumeric characters';
         nameFieldLabel.focus();
@@ -128,7 +128,7 @@ const errorHandling = (fieldName) => {
       break;
 
     default:
-      if (!name.value.match(/^[a-zA-Z0-9]{4,20}$/)) {
+      if (!name.value.match(/^[a-zA-Z0-9 ]{4,20}$/)) {
         nameFieldLabel.innerText =
           'Name field should be between 4 to 20 characters, including only alphanumeric characters';
         nameFieldLabel.focus();
@@ -267,13 +267,14 @@ const editEntries = (rowCount) => {
   email.value = dataToEdit?.email;
   phone.value = dataToEdit?.phone;
 
-  dataToEdit?.hobbies.forEach((val) => {
-    document.getElementById(`${val}`).checked = true;
-  });
+  dataToEdit.hobbies !== 'null' &&
+    dataToEdit?.hobbies?.forEach((val) => {
+      document.getElementById(`${val}`).checked = true;
+    });
 
   // changing the submit button to update
   errorHandling();
-  document.querySelector("[onclick='createData()']").style.display = 'none';
+  document.getElementById('submitData').style.display = 'none';
 
   let updateDataBtn = document.getElementById('updateDataBtn');
   console.log(updateDataBtn);
@@ -301,10 +302,11 @@ updateDataBtn.addEventListener('click', (val) => {
       dob: dob.value,
       email: email.value,
       phone: phone.value || 'null',
-      hobbies: hobbies || 'null',
+      hobbies: !hobbies.length == 0 ? hobbies : 'null',
     };
 
     const previousData = JSON.parse(localStorage.getItem('dummyData'));
+    console.log(previousData);
     previousData.splice(rowCount, 1, newData);
     localStorage.setItem('dummyData', JSON.stringify(previousData));
     checkData();
@@ -314,15 +316,17 @@ updateDataBtn.addEventListener('click', (val) => {
     dob.value = null;
     email.value = null;
     phone.value = null;
-    previousData[rowCount].hobbies.forEach((val, index) => {
-      document.getElementById(`${val}`).checked = false;
-    });
+    previousData[rowCount].hobbies !== 'null' &&
+      previousData[rowCount].hobbies.forEach((val) => {
+        document.getElementById(`${val}`).checked = false;
+      });
 
     document.querySelector("[onclick='createData()']").style.display = 'block';
     let updateDataBtn = document.getElementById('updateDataBtn');
     updateDataBtn.style.display = 'none';
 
     alert('Your data has been updated successfully!!');
+    window.scrollTo(0, document.body.scrollHeight);
   }
 });
 
@@ -332,6 +336,7 @@ const searchEntries = (e) => {
   let filterData = setData?.filter((item) => {
     return item?.name.toLowerCase().includes(e);
   });
+
   let previousData = '';
   filterData?.forEach((val, index) => {
     previousData += `<tr id=${index}  >
@@ -343,7 +348,7 @@ const searchEntries = (e) => {
         <td>${val.hobbies}</td>
 
         <td>
-          <button onclick="editEntries(${index})">edit</button>setData
+          <button onclick="editEntries(${index})">edit</button>
           <button onclick="deleteData(${index})">Delete</button>
         </td>
       </tr>`;
