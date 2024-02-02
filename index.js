@@ -1,20 +1,24 @@
-// Regrex expressions
+// ############################################# Regrex expressions ###########################################
 
 const regrexEmail = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{1,5})$/;
 const regrexPhone = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/;
-const dummyData = localStorage.getItem('dummyData') ? JSON.parse(localStorage.getItem('dummyData')) : [];
+
+// ################################################## Global declarations ###################################
+const userData = JSON.parse(localStorage.getItem('userData')) ?? [];
 let tbody = document.querySelector('tbody');
 
 let submitDataBtn = document.getElementById('submitData');
 
-let setData = localStorage.getItem('dummyData') ? JSON.parse(localStorage.getItem('dummyData')) : [];
-// console.log(setData);
+let setData = JSON.parse(localStorage.getItem('userData')) ?? [];
 
 let name = document.getElementById('name');
 let dob = document.getElementById('dob');
 let email = document.getElementById('email');
 let phone = document.getElementById('phone');
 let gender = document.querySelector('input[name="gender"]:checked');
+
+console.log('setData', setData);
+console.log('userData', userData);
 
 //################## Advance table JS ##############################
 
@@ -153,7 +157,7 @@ const errorHandling = (fieldName) => {
         flag.splice(0, 0, true);
       }
       if (!dob.value) {
-        console.log('flag2');
+        // console.log('flag2');
         dobFieldLabel.innerText = 'Date of birth is required';
         dobFieldLabel.focus();
 
@@ -183,8 +187,22 @@ const errorHandling = (fieldName) => {
   }
 };
 
-const createData = () => {
-  const pushData = errorHandling().every((item) => item === true);
+// ################################################ INSERT DATA FUNCTIONALITY ###################################
+
+// Function to check Valid data
+function checkIfInputDataIsValid() {
+  let phoneNumberIsValid = true;
+  if (phone.value) {
+    phoneNumberIsValid = checkPhoneNumber();
+  }
+
+  return errorHandling().every((item) => item === true) && phoneNumberIsValid;
+
+  // return boolean
+}
+
+// function to set Data to localstorage
+function pushDataToLocalStorage() {
   hobbies = [];
 
   gender = document.querySelector('input[name="gender"]:checked');
@@ -194,48 +212,139 @@ const createData = () => {
   for (let x of getHobbies) {
     hobbies.push(x.value);
   }
-  // console.log(pushData);
 
-  // if (name.value !== '' && gender.value !== '' && dob.value !== '' && email.value.match(regrexEmail)) {
+  const newDataToPush = {
+    name: name.value,
+    gender: gender.value,
+    dob: dob.value,
+    email: email.value,
+    phone: phone.value || 'null',
+    hobbies: !hobbies.length == 0 ? hobbies : 'null',
+  };
 
-  let phoneNumberIsValid = true;
-  if (phone.value) {
-    phoneNumberIsValid = checkPhoneNumber();
+  setData?.push(newDataToPush);
+
+  localStorage.setItem('userData', JSON.stringify(setData));
+}
+
+function clearDataFromInputForm() {
+  name.value = null;
+  dob.value = null;
+  email.value = null;
+  document.querySelector("[value='Male']").checked = true;
+  phone.value = null;
+
+  hobbies?.forEach((val) => {
+    document.getElementById(`${val}`).checked = false;
+  });
+
+  setTimeout(() => {
+    alert('Data submitted successfully!!');
+  }, 10);
+}
+
+// Create data
+
+function createData() {
+  if (checkIfInputDataIsValid()) {
+    pushDataToLocalStorage();
+    clearDataFromInputForm();
+    checkData();
+    insertDataToAdvTable();
   }
+}
 
-  if (pushData && phoneNumberIsValid) {
-    setData.push({
+//######################################################## UPDATE ENTRIES FUNCTIONALITY #################################
+
+const submitdataBtn = document.getElementById('submitData');
+const updateDataBtn = document.getElementById('updateDataBtn');
+const cancelUpdateDataBtn = document.getElementById('cancelUpdateDataBtn');
+
+const editEntries = (rowCount) => {
+  document.getElementById('jumpToThis').scrollIntoView();
+
+  setData = JSON.parse(localStorage.getItem('userData'));
+  let dataToEdit = setData[rowCount];
+
+  name.value = dataToEdit?.name;
+  document.querySelector(`[value="${dataToEdit.gender}"]`).checked = 'true';
+  dob.value = dataToEdit?.dob;
+  email.value = dataToEdit?.email;
+  phone.value = dataToEdit?.phone;
+
+  dataToEdit.hobbies !== 'null' &&
+    dataToEdit?.hobbies?.forEach((val) => {
+      document.getElementById(`${val}`).checked = true;
+    });
+
+  // changing the submit button to update
+  errorHandling();
+  submitDataBtn.style.display = 'none';
+
+  // console.log(updateDataBtn);
+
+  updateDataBtn.style.display = 'inline';
+  updateDataBtn.value = rowCount;
+
+  cancelUpdateDataBtn.style.display = 'inline';
+};
+
+updateDataBtn.addEventListener('click', (val) => {
+  let updateDataBtn = document.getElementById('updateDataBtn');
+  let rowCount = updateDataBtn.value;
+
+  if (checkIfInputDataIsValid()) {
+    gender = document.querySelector('input[name="gender"]:checked');
+
+    hobbies = [];
+
+    let getHobbies = document.querySelectorAll('input[type="checkbox"]:checked');
+    for (let x of getHobbies) {
+      hobbies.push(x.value);
+    }
+
+    let newData = {
       name: name.value,
       gender: gender.value,
       dob: dob.value,
       email: email.value,
       phone: phone.value || 'null',
       hobbies: !hobbies.length == 0 ? hobbies : 'null',
-    });
-    localStorage.setItem('dummyData', JSON.stringify(setData));
-    checkData();
+    };
 
-    // resetting the  form entries
+    const previousData = JSON.parse(localStorage.getItem('userData'));
+    // console.log(previousData);
+    previousData.splice(rowCount, 1, newData);
+    localStorage.setItem('userData', JSON.stringify(previousData));
+    checkData();
+    insertDataToAdvTable();
+
     name.value = null;
     dob.value = null;
     email.value = null;
-    document.querySelector("[value='Male']").checked = true;
     phone.value = null;
+    previousData[rowCount].hobbies !== 'null' &&
+      previousData[rowCount].hobbies.forEach((val) => {
+        document.getElementById(`${val}`).checked = false;
+      });
+    document.getElementById('cancelUpdateDataBtn').style.display = 'none';
 
-    hobbies?.forEach((val) => {
-      document.getElementById(`${val}`).checked = false;
-    });
+    document.querySelector("[onclick='createData()']").style.display = 'block';
+    let updateDataBtn = document.getElementById('updateDataBtn');
+    updateDataBtn.style.display = 'none';
 
-    insertDataToAdvTable();
-    alert('Data submitted successfully!!');
+    setTimeout(() => {
+      alert('Your data has been updated successfully!!');
+    }, 10);
+
     // window.scrollTo(0, document.body.scrollHeight);
   }
-};
+});
 
 const deleteAllBtn = document.querySelector("[value='Delete all']");
 
 const checkData = () => {
-  setData = localStorage.getItem('dummyData') ? JSON.parse(localStorage.getItem('dummyData')) : [];
+  setData = localStorage.getItem('userData') ? JSON.parse(localStorage.getItem('userData')) : [];
 
   if (setData !== null && setData?.length !== 0) {
     deleteAllBtn.style.display = 'block';
@@ -277,94 +386,11 @@ const deleteData = (rowCount) => {
     let row = document.getElementById(rowCount);
     row.remove();
 
-    localStorage.setItem('dummyData', JSON.stringify(updatedData));
+    localStorage.setItem('userData', JSON.stringify(updatedData));
     checkData();
     insertDataToAdvTable();
   }
 };
-
-//###################### Edit entries ######################################################
-const submitdataBtn = document.getElementById('submitData');
-const updateDataBtn = document.getElementById('updateDataBtn');
-const cancelUpdateDataBtn = document.getElementById('cancelUpdateDataBtn');
-
-const editEntries = (rowCount) => {
-  document.getElementById('jumpToThis').scrollIntoView();
-
-  setData = JSON.parse(localStorage.getItem('dummyData'));
-  let dataToEdit = setData[rowCount];
-
-  name.value = dataToEdit?.name;
-  document.querySelector(`[value="${dataToEdit.gender}"]`).checked = 'true';
-  dob.value = dataToEdit?.dob;
-  email.value = dataToEdit?.email;
-  phone.value = dataToEdit?.phone;
-
-  dataToEdit.hobbies !== 'null' &&
-    dataToEdit?.hobbies?.forEach((val) => {
-      document.getElementById(`${val}`).checked = true;
-    });
-
-  // changing the submit button to update
-  errorHandling();
-  submitDataBtn.style.display = 'none';
-
-  // console.log(updateDataBtn);
-
-  updateDataBtn.style.display = 'inline';
-  updateDataBtn.value = rowCount;
-
-  cancelUpdateDataBtn.style.display = 'inline';
-};
-
-updateDataBtn.addEventListener('click', (val) => {
-  let updateDataBtn = document.getElementById('updateDataBtn');
-  let rowCount = updateDataBtn.value;
-
-  if (name.value !== '' && gender.value !== '' && dob.value !== '' && email.value.match(regrexEmail)) {
-    gender = document.querySelector('input[name="gender"]:checked');
-
-    hobbies = [];
-
-    let getHobbies = document.querySelectorAll('input[type="checkbox"]:checked');
-    for (let x of getHobbies) {
-      hobbies.push(x.value);
-    }
-
-    let newData = {
-      name: name.value,
-      gender: gender.value,
-      dob: dob.value,
-      email: email.value,
-      phone: phone.value || 'null',
-      hobbies: !hobbies.length == 0 ? hobbies : 'null',
-    };
-
-    const previousData = JSON.parse(localStorage.getItem('dummyData'));
-    console.log(previousData);
-    previousData.splice(rowCount, 1, newData);
-    localStorage.setItem('dummyData', JSON.stringify(previousData));
-    checkData();
-    insertDataToAdvTable();
-
-    name.value = null;
-    dob.value = null;
-    email.value = null;
-    phone.value = null;
-    previousData[rowCount].hobbies !== 'null' &&
-      previousData[rowCount].hobbies.forEach((val) => {
-        document.getElementById(`${val}`).checked = false;
-      });
-    document.getElementById('cancelUpdateDataBtn').style.display = 'none';
-
-    document.querySelector("[onclick='createData()']").style.display = 'block';
-    let updateDataBtn = document.getElementById('updateDataBtn');
-    updateDataBtn.style.display = 'none';
-
-    alert('Your data has been updated successfully!!');
-    // window.scrollTo(0, document.body.scrollHeight);
-  }
-});
 
 cancelUpdateDataBtn.addEventListener('click', () => {
   name.value = null;
