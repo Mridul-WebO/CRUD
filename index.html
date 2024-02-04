@@ -1,127 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CRUD</title>
-    <link rel="stylesheet" href="index.css" />
-  </head>
 
-  <body>
-    <!-- ######################## Employee Table ############################ -->
-    <div class="main-container" id="jumpToThis">
-      <h3>Employee</h3>
-      <!-- NavBar -->
-      <div id="navbar-container">
-        <span> &nbsp;&nbsp;Add employee</span>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRUD</title>
+  <link rel="stylesheet" href="index.css" />
+  <!-- <script src="index.js" type="module" async></script> -->
 
-      <!-- MainContent -->
-      <div class="container">
-        <form onsubmit="return false;">
-          <div class="row">
-            <div class="col">Name:</div>
-            <div class="col">
-              <input type="text" name="name" id="name" placeholder="Enter name" onchange="errorHandling(this.name)" />
-              <div class="error-name"></div>
+</head>
+
+<body>
+  <!-- ######################## Employee Table ############################ -->
+  <div class="main-container" id="jumpToThis">
+    <h3>Employee</h3>
+    <!-- NavBar -->
+    <div id="navbar-container">
+      <span> &nbsp;&nbsp;Add employee</span>
+    </div>
+
+    <!-- MainContent -->
+    <div class="container">
+      <form onsubmit="return false;">
+        <div class="row">
+          <div class="col">Name:</div>
+          <div class="col">
+            <input type="text" name="name" id="name" placeholder="Enter name" onchange="errorHandling(this.name)" />
+            <div class="error-name"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">Gender:</div>
+          <div class="col">
+            <input type="radio" name="gender" id="male" value="Male" checked />
+            <label for="male"> Male</label>
+            <input type="radio" name="gender" id="female" value="Female" />
+            <label for="female"> Female</label>
+            <div class="error-gender"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">Date of Birth:</div>
+          <div class="col">
+            <input type="date" name="date" id="dob" onchange="errorHandling(this.name)" />
+            <div class="error-dob"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">Email:</div>
+          <div class="col">
+            <input type="email" name="email" id="email" placeholder="Enter email" onchange="errorHandling(this.name)" />
+            <div class="error-email"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">Phone:</div>
+          <div class="col">
+            <input type="tel" name="phone" id="phone" placeholder="Enter phone" onchange="errorHandling(this.name)" />
+            <div class="error-phone"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">Hobbies:</div>
+          <div class="col">
+            <div class="check">
+              <input type="checkbox" name="hobbies" id="Cricket" value="Cricket" />
+              <label for="Cricket">Cricket</label>
+            </div>
+            <div class="check">
+              <input type="checkbox" name="hobbies" id="Chess" value="Chess" />
+              <label for="Chess">Chess</label>
+            </div>
+            <div class="check">
+              <input type="checkbox" name="hobbies" id="Music" value="Music" />
+              <label for="Music">Music</label>
             </div>
           </div>
-          <div class="row">
-            <div class="col">Gender:</div>
-            <div class="col">
-              <input type="radio" name="gender" id="male" value="Male" checked />
-              <label for="male"> Male</label>
-              <input type="radio" name="gender" id="female" value="Female" />
-              <label for="female"> Female</label>
-              <div class="error-gender"></div>
-            </div>
+        </div>
+        <div class="row">
+          <div class="col"></div>
+          <div class="col">
+            <button id="submitData">Submit</button>
+            <button style="display: none" id="updateDataBtn">Update</button>
+            <button style="display: none" id="cancelUpdateDataBtn">cancel</button>
           </div>
-          <div class="row">
-            <div class="col">Date of Birth:</div>
-            <div class="col">
-              <input type="date" name="date" id="dob" onchange="errorHandling(this.name)" />
-              <div class="error-dob"></div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">Email:</div>
-            <div class="col">
-              <input
-                type="email"
-                name="email"
-                id="email"
-                placeholder="Enter email"
-                onchange="errorHandling(this.name)"
-              />
-              <div class="error-email"></div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">Phone:</div>
-            <div class="col">
-              <input type="tel" name="phone" id="phone" placeholder="Enter phone" />
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">Hobbies:</div>
-            <div class="col">
-              <div class="check">
-                <input type="checkbox" name="cricket" id="Cricket" value="Cricket" />
-                <label for="Cricket">Cricket</label>
-              </div>
-              <div class="check">
-                <input type="checkbox" name="chess" id="Chess" value="Chess" />
-                <label for="Chess">Chess</label>
-              </div>
-              <div class="check">
-                <input type="checkbox" name="music" id="Music" value="Music" />
-                <label for="Music">Music</label>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col"></div>
-            <div class="col">
-              <button id="submitData" onclick="createData()">Submit</button>
-              <button style="display: none" id="updateDataBtn">Update</button>
-              <button style="display: none" id="cancelUpdateDataBtn">cancel</button>
-            </div>
-          </div>
-        </form>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ######################## Basic Table ############################ -->
+
+  <!-- <div class="main-container">
+    <h3>Basic</h3>
+
+    <div id="navbar-container">
+      <span> &nbsp;Display</span>
+      <div id="searchBox">
+        <input type="text" placeholder="Search entries..." onkeyup="searchEntries(this.value.toLowerCase())" />
+        <label for="sortEntries">Sort</label>
+        <input type="checkbox" name="sortEntries" id="sortEntries" onchange="sortEntriesAccToDob()" />
+        <input style="display: none" onclick="deleteAll()" type="button" value="Delete all" />
       </div>
     </div>
 
-    <!-- ######################## Basic Table ############################ -->
-
-    <div class="main-container">
-      <h3>Basic</h3>
-      <!-- NavBar -->
-      <div id="navbar-container">
-        <span> &nbsp;Display</span>
-        <div id="searchBox">
-          <input type="text" placeholder="Search entries..." onkeyup="searchEntries(this.value.toLowerCase())" />
-          <label for="sortEntries">Sort</label>
-          <input type="checkbox" name="sortEntries" id="sortEntries" onchange="sortEntriesAccToDob()" />
-          <input style="display: none" onclick="deleteAll()" type="button" value="Delete all" />
-        </div>
-      </div>
-
-      <!-- MainContent -->
-      <div class="container container-basic-table">
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Gender</th>
-              <th>DOB</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>Hobbies</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- <tr>
+   
+    <div class="container container-basic-table" id="basicTable">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>DOB</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Hobbies</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
               <td>Sam</td>
               <td>Male</td>
               <td>10-02-2001</td>
@@ -129,57 +127,20 @@
               <td>12345678</td>
               <td>music</td>
               <td>
+
                 <button onclick="">edit</button>
                 <button class="btn" onclick="deleteData()">Delete</button>
               </td>
-            </tr> -->
-          </tbody>
-        </table>
-      </div>
+            </tr>
+        </tbody>
+      </table>
     </div>
+  </div> -->
 
-    <!-- ######################## Advance Table ############################ -->
-    <div class="main-container">
-      <h3>Advance</h3>
-      <!-- NavBar -->
-      <div id="navbar-container">
-        <span> &nbsp;Display</span>
-      </div>
+  <!-- ######################## Advance Table ############################ -->
 
-      <!-- MainContent -->
-      <div class="container advance-table container-basic-table">
-        <table id="adv">
-          <tbody>
-            <tr>
-              <th>Name</th>
-            </tr>
-            <tr>
-              <th>Gender</th>
-            </tr>
-            <tr>
-              <th>DOB</th>
-            </tr>
-            <tr>
-              <th>Email</th>
-            </tr>
-            <tr>
-              <th>Phone</th>
-            </tr>
-            <tr>
-              <th>Hobbies</th>
-            </tr>
-            <tr>
-              <th>Actions</th>
-              <!-- <td>
-              <button onclick="">edit</button>
-              <button class="btn">Delete</button>
-            </td> -->
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+  <script src="index.js" type="module"></script>
 
-    <script src="index.js"></script>
-  </body>
+</body>
+
 </html>
