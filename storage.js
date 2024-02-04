@@ -63,6 +63,18 @@ export function deleteDataFromLocalStorage(userId) {
 
 }
 
+export function updateDataInLocalStoarge(updatedData) {
+    try {
+        const newData = fetchDataFromLocalStorage().userData
+        newData.splice(updatedData.userId - 1, 1, updatedData)
+        localStorage.setItem('userData', JSON.stringify(newData))
+
+
+    } catch (error) {
+
+    }
+}
+
 export function clearLocalStorage() {
     try {
         localStorage.clear();
