@@ -1,6 +1,5 @@
 
 
-
 // ########################## New Code ##############################
 // import statments
 
@@ -147,7 +146,7 @@ document.forms[0].elements.email.addEventListener('keyup', (e) => {
 
 
 
-function loadTable() {
+function loadBasicTable() {
 
   const body = document.body;
   const main_container = document.createElement('div');
@@ -180,30 +179,31 @@ function loadTable() {
 
   body.appendChild(main_container);
 
+
+
   createBasicTable();
   checkData()
 
 
-
-
 }
+
+
 
 function checkData() {
   if (!fetchDataFromLocalStorage().isEmpty) {
-    document.body.childNodes[17].style.display = 'block'
+    document.body.childNodes[13].style.display = 'block'
 
   } else {
-    document.body.childNodes[17].style.display = 'none'
+    document.body.childNodes[13].style.display = 'none'
   }
 
 }
 
+loadBasicTable()
 
 
 
 
-
-loadTable()
 
 
 
@@ -239,7 +239,7 @@ function createBasicTable() {
 
     if (!fetchDataFromLocalStorage().isEmpty) {
 
-      document.body.lastChild.childNodes[2].childNodes[0].appendChild(document.createElement('tbody'));
+      document.body.childNodes[13].childNodes[2].childNodes[0].appendChild(tbody);
 
       const storedData = fetchDataFromLocalStorage().userData;
 
@@ -264,7 +264,7 @@ function createBasicTable() {
 
         td.appendChild(deleteBtn);
         tr.appendChild(td);
-        document.body.lastChild.childNodes[2].childNodes[0].childNodes[1].appendChild(tr);
+        tbody.appendChild(tr);
 
         editBtn.addEventListener('click', () => {
 
@@ -436,15 +436,79 @@ function createBasicTable() {
 
 
 
-
-
-
-
-
-
 };
 
 
+
+
+// adv table
+
+function loadAdvTable() {
+
+  const body = document.body;
+  const main_container = document.createElement('div');
+  const h3 = document.createElement('h3');
+  h3.innerText = 'Advance Table'
+  main_container.setAttribute('class', 'main-container');
+  main_container.appendChild(h3);
+  const navbar_container = document.createElement('div');
+  navbar_container.setAttribute('id', 'navbar-container');
+  const span = document.createElement('span');
+  span.innerText = 'Display';
+  // const deleteAllBtn = document.createElement('button')
+  // const searchInput = document.createElement('input')
+  // searchInput.placeholder = "search here..."
+  // deleteAllBtn.style.backgroundColor = 'red'
+  // deleteAllBtn.innerText = "delete all"
+  navbar_container.appendChild(span);
+  // // navbar_container.appendChild(searchInput)
+  // // navbar_container.appendChild(deleteAllBtn)
+  main_container.appendChild(navbar_container);
+  const advTable = document.createElement('div');
+  advTable.setAttribute('class', 'container advance-table container-basic-table');
+  advTable.setAttribute('id', 'adv');
+  main_container.appendChild(advTable);
+
+  body.appendChild(main_container)
+
+
+  createAdvTable()
+
+
+
+}
+
+loadAdvTable()
+
+
+
+function createAdvTable() {
+
+  const advContainer = document.getElementById("adv");
+  const table = document.createElement('table');
+
+  const tbody = document.createElement('tbody');
+
+  ['Sr. no.', 'Name', 'Gender', 'DOB', 'Email', 'Phone', 'Hobbies', 'Actions'].forEach(
+    (val) => {
+
+      const tr = document.createElement('tr');
+      const th = document.createElement('th')
+      th.innerText = val
+      tr.appendChild(th)
+      tbody.appendChild(tr)
+    }
+  );
+
+  table.appendChild(tbody)
+
+  advContainer.appendChild(table)
+
+
+
+
+
+}
 
 
 
