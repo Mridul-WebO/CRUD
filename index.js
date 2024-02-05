@@ -7,15 +7,18 @@ import {
   deleteDataFromLocalStorage,
   clearLocalStorage,
   updateDataInLocalStorage,
+  counter
 } from '../storage.js';
+
+
 
 document.forms[0].elements.dob.max = new Date().toISOString().split('T')[0]; // to prevent selection of future dates in datepicker
 
-function getUserId() {
-  const userId = !fetchDataFromLocalStorage().isEmpty ? fetchDataFromLocalStorage().userData.length + 1 : 1;
+// function getUserId() {
+//   const userId = !fetchDataFromLocalStorage().isEmpty ? fetchDataFromLocalStorage().userData.length + 1 : 1;
 
-  return userId;
-}
+//   return userId;
+// }
 
 function getUserData(id) {
   const name = document.forms[0].elements.name;
@@ -27,7 +30,7 @@ function getUserData(id) {
     .filter((val) => val.checked)
     .map((val) => val.value)
     .join(', ');
-  const userId = id ?? getUserId();
+
 
   // console.log(userId);
 
@@ -58,7 +61,7 @@ function getUserData(id) {
   // console.log(gender.value);
 
   if (name.validity.valid && dob.validity.valid && email.validity.valid) {
-    console.log("valid toh hain");
+    const userId = counter()
     const userData = {
       userId: userId,
       name: name.value,
@@ -354,6 +357,10 @@ function createBasicTable() {
       }
     });
 
+    cancelBtn.addEventListener('click', () => {
+
+    })
+
     deleteBtn.addEventListener('click', () => {
       console.log(tr);
       document.body.lastChild.childNodes[2].childNodes[0].childNodes[1].removeChild(tr);
@@ -457,9 +464,13 @@ function loadAdvTable() {
   advTable.setAttribute('id', 'adv');
   main_container.appendChild(advTable);
 
+
+
   body.appendChild(main_container);
 
   createAdvTable();
+
+
 }
 
 loadAdvTable();
@@ -467,6 +478,8 @@ loadAdvTable();
 // ######################### advance table code starts here #####################################
 function createAdvTable() {
   console.log("hello");
+
+
   const advContainer = document.getElementById('adv');
   const table = document.createElement('table');
 
@@ -474,7 +487,10 @@ function createAdvTable() {
 
   const arr = ['userId', 'name', 'gender', 'dob', 'email', 'phone', 'hobbies', 'Actions'];
 
-
+  const updateBtn = document.createElement('button');
+  updateBtn.innerText = 'Update';
+  const cancelBtn = document.createElement('button');
+  cancelBtn.innerText = 'cancel';
 
   const storedData = fetchDataFromLocalStorage().userData;
 
@@ -504,8 +520,54 @@ function createAdvTable() {
           document.forms[0].elements[4].value = tbody.childNodes[4].childNodes[j + 1].innerText;
           document.forms[0].elements[5].value = tbody.childNodes[5].childNodes[j + 1].innerText;
           document.forms[0].elements[6].value = tbody.childNodes[6].childNodes[j + 1].innerText;
+
+          document.forms[0].elements.submitData.style.display = 'none';
+          document.forms[0].childNodes[13].childNodes[3].appendChild(updateBtn);
+          document.forms[0].childNodes[13].childNodes[3].appendChild(cancelBtn);
+
+
           document.forms[0].scrollIntoView();
         });
+
+
+        updateBtn.addEventListener('click', () => {
+          const { userData, status } = getUserData()
+          if (true) {
+            const data = getUserData(parseInt(tr.childNodes[0].innerText)).userData;
+            console.log(data);
+
+            //         tbody.childNodes[1].childNodes[j + 1].innerText   =  userData.name;
+            // tbody.childNodes[2].childNodes[j + 1].innerText  = userData.gender;
+            // tbody.childNodes[3].childNodes[j + 1].innerText    = userData.dob;
+            // tbody.childNodes[4].childNodes[j + 1].innerText   = userData.email;
+            // tbody.childNodes[5].childNodes[j + 1].innerText; = = userData.phone ? data.phone : '-';
+            // tbody.childNodes[6].childNodes[j + 1].innerText;
+
+
+
+
+
+
+
+            //         tr.childNodes[6].innerText = Array.from(document.forms[0].elements.hobbies)
+            //           .filter((val) => val.checked)
+            //           .map((val) => val.value)
+            //           .join(', ');
+
+            //         document.forms[0].childNodes[13].childNodes[3].removeChild(updateBtn);
+            //         document.forms[0].childNodes[13].childNodes[3].removeChild(cancelBtn);
+            //         document.forms[0].elements.submitData.style.display = 'block';
+            //         updateDataInLocalStorage(data);
+            //         document.forms[0].reset()
+            //         setTimeout(() => {
+            //           alert('Data updated successfully!!');
+            //         }, 10);
+          }
+        });
+
+        cancelBtn.addEventListener('click', () => {
+
+        })
 
         deleteBtn.addEventListener('click', () => {
 
