@@ -58,6 +58,7 @@ function getUserData(id) {
   // console.log(gender.value);
 
   if (name.validity.valid && dob.validity.valid && email.validity.valid) {
+    console.log("valid toh hain");
     const userData = {
       userId: userId,
       name: name.value,
@@ -69,9 +70,11 @@ function getUserData(id) {
     };
 
     return { userData: userData, status: true };
-  }
+  } else {
 
-  return { status: false };
+
+    return { status: false };
+  }
 }
 
 document.forms[0].elements.name.addEventListener('keyup', (e) => {
@@ -86,7 +89,7 @@ document.forms[0].elements.name.addEventListener('keyup', (e) => {
 });
 
 document.forms[0].elements.dob.addEventListener('focus', (e) => {
-  console.log(e.target);
+
   if (e.target.value === '') {
     e.target.setCustomValidity('Date of birth is required!!');
   } else {
@@ -167,7 +170,7 @@ function createBasicTable() {
   table.appendChild(thead);
   thead.appendChild(tr);
 
-  ['Sr. no.', 'Name', 'Gender', 'DOB', 'Email', 'Phone', 'Hobbies', 'Actions'].forEach((val) => {
+  ['userId', 'name', 'gender', 'dob', 'email', 'phone', 'hobbies', 'Actions'].forEach((val) => {
     const th = document.createElement('th');
     tr.appendChild(th);
     th.innerText = val;
@@ -176,14 +179,18 @@ function createBasicTable() {
   const tbody = document.createElement('tbody');
 
   window.onload = function () {
-    console.log('hello-------------');
+    // console.log('hello-------------');
     if (!fetchDataFromLocalStorage().isEmpty) {
       document.body.childNodes[13].childNodes[2].childNodes[0].appendChild(tbody);
 
       const storedData = fetchDataFromLocalStorage().userData;
+      const updateBtn = document.createElement('button');
+      updateBtn.innerText = 'Update';
+      const cancelBtn = document.createElement('button');
+      cancelBtn.innerText = 'cancel';
 
       storedData.forEach((val) => {
-        // console.log(val);
+        console.log(val);
 
         const tr = document.createElement('tr');
         for (let x in val) {
@@ -204,7 +211,10 @@ function createBasicTable() {
         tr.appendChild(td);
         tbody.appendChild(tr);
 
+
+
         editBtn.addEventListener('click', () => {
+
           // document.forms[]
 
           document.forms[0].elements[0].value = tr.childNodes[1].innerText;
@@ -226,38 +236,40 @@ function createBasicTable() {
 
           // show update and cancel button in form
 
-          const updateBtn = document.createElement('button');
-          updateBtn.innerText = 'Update';
-          const cancelBtn = document.createElement('button');
-          cancelBtn.innerText = 'cancel';
+
           document.forms[0].elements.submitData.style.display = 'none';
+
           document.forms[0].childNodes[13].childNodes[3].appendChild(updateBtn);
           document.forms[0].childNodes[13].childNodes[3].appendChild(cancelBtn);
+          document.forms[0].scrollIntoView()
 
-          updateBtn.addEventListener('click', () => {
-            if (getUserData().status) {
-              const data = getUserData(parseInt(tr.childNodes[0].innerText)).userData;
 
-              tr.childNodes[1].innerText = data.name;
-              tr.childNodes[2].innerText = data.gender;
-              tr.childNodes[3].innerText = data.dob;
-              tr.childNodes[4].innerText = data.email;
-              tr.childNodes[5].innerText = data.phone ? data.phone : '-';
+        });
 
-              tr.childNodes[6].innerText = Array.from(document.forms[0].elements.hobbies)
-                .filter((val) => val.checked)
-                .map((val) => val.value)
-                .join(', ');
+        updateBtn.addEventListener('click', () => {
+          if (getUserData().status) {
+            const data = getUserData(parseInt(tr.childNodes[0].innerText)).userData;
 
-              document.forms[0].childNodes[13].childNodes[3].removeChild(updateBtn);
-              document.forms[0].childNodes[13].childNodes[3].removeChild(cancelBtn);
-              document.forms[0].elements.submitData.style.display = 'block';
-              updateDataInLocalStorage(data);
-              setTimeout(() => {
-                alert('Data updated successfully!!');
-              }, 10);
-            }
-          });
+            tr.childNodes[1].innerText = data.name;
+            tr.childNodes[2].innerText = data.gender;
+            tr.childNodes[3].innerText = data.dob;
+            tr.childNodes[4].innerText = data.email;
+            tr.childNodes[5].innerText = data.phone ? data.phone : '-';
+
+            tr.childNodes[6].innerText = Array.from(document.forms[0].elements.hobbies)
+              .filter((val) => val.checked)
+              .map((val) => val.value)
+              .join(', ');
+
+            document.forms[0].childNodes[13].childNodes[3].removeChild(updateBtn);
+            document.forms[0].childNodes[13].childNodes[3].removeChild(cancelBtn);
+            document.forms[0].elements.submitData.style.display = 'block';
+            updateDataInLocalStorage(data);
+            document.forms[0].reset()
+            setTimeout(() => {
+              alert('Data updated successfully!!');
+            }, 10);
+          }
         });
 
         deleteBtn.addEventListener('click', () => {
@@ -275,6 +287,12 @@ function createBasicTable() {
 
   function createNewRow(userInputData) {
     const data = userInputData;
+
+    const updateBtn = document.createElement('button');
+    updateBtn.innerText = 'Update';
+    const cancelBtn = document.createElement('button');
+    cancelBtn.innerText = 'cancel';
+
 
     const tr = document.createElement('tr');
     for (let x in data) {
@@ -298,6 +316,42 @@ function createBasicTable() {
       document.forms[0].elements[4].value = tr.childNodes[4].innerText;
       document.forms[0].elements[5].value = tr.childNodes[5].innerText;
       document.forms[0].elements[6].value = tr.childNodes[6].innerText;
+
+
+      document.forms[0].elements.submitData.style.display = 'none';
+
+      document.forms[0].childNodes[13].childNodes[3].appendChild(updateBtn);
+      document.forms[0].childNodes[13].childNodes[3].appendChild(cancelBtn);
+
+      document.forms[0].scrollTop()
+
+
+    });
+
+    updateBtn.addEventListener('click', () => {
+      if (getUserData().status) {
+        const data = getUserData(parseInt(tr.childNodes[0].innerText)).userData;
+
+        tr.childNodes[1].innerText = data.name;
+        tr.childNodes[2].innerText = data.gender;
+        tr.childNodes[3].innerText = data.dob;
+        tr.childNodes[4].innerText = data.email;
+        tr.childNodes[5].innerText = data.phone ? data.phone : '-';
+
+        tr.childNodes[6].innerText = Array.from(document.forms[0].elements.hobbies)
+          .filter((val) => val.checked)
+          .map((val) => val.value)
+          .join(', ');
+
+        document.forms[0].childNodes[13].childNodes[3].removeChild(updateBtn);
+        document.forms[0].childNodes[13].childNodes[3].removeChild(cancelBtn);
+        document.forms[0].elements.submitData.style.display = 'block';
+        updateDataInLocalStorage(data);
+        document.forms[0].reset()
+        setTimeout(() => {
+          alert('Data updated successfully!!');
+        }, 10);
+      }
     });
 
     deleteBtn.addEventListener('click', () => {
@@ -311,20 +365,69 @@ function createBasicTable() {
     table.appendChild(tbody);
   }
 
-  document.forms[0].elements.submitData.addEventListener('click', () => {
-    // console.log("hello");
-    // console.log(tr);
 
-    const userData = getUserData();
-    if (userData.status) {
-      console.log(userData);
-      setDataIntoLocalStorage(userData.userData);
+  document.forms[0].elements.submitData.addEventListener('click', () => {
+
+    const { userData, status } = getUserData()
+
+    const trsAdv = document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes;
+
+    const arr = ['userId', 'name', 'gender', 'dob', 'email', 'phone', 'hobbies', 'Actions'];
+
+
+    if (status) {
+
+
+
+      // console.log(userData);
+      setDataIntoLocalStorage(userData);
       // console.log(valid);
-      createNewRow(userData.userData);
+      createNewRow(userData);
       checkData();
+
+
+      for (let i = 0; i < arr.length; i++) {
+        // console.log(trsAdv[i].childNodes[0]);
+        const td = document.createElement('td');
+        if (arr[i] === 'Actions') {
+          const editBtn = document.createElement('button');
+          editBtn.innerText = 'Edit';
+          const deleteBtn = document.createElement('button');
+          deleteBtn.innerText = 'Delete';
+          td.appendChild(editBtn);
+          td.appendChild(deleteBtn);
+
+          editBtn.addEventListener('click', () => {
+            // console.log(tbody);
+            document.forms[0].elements[0].value = document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[1].childNodes[userData.userId].innerText;
+            document.forms[0].elements.gender.value = document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[2].childNodes[userData.userId].innerText;
+            document.forms[0].elements[3].value = document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[3].childNodes[userData.userId].innerText;
+            document.forms[0].elements[4].value = document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[4].childNodes[userData.userId].innerText;
+            document.forms[0].elements[5].value = document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[5].childNodes[userData.userId].innerText;
+            document.forms[0].elements[6].value = document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[6].childNodes[userData.userId].innerText;
+            document.forms[0].scrollIntoView();
+          });
+
+          deleteBtn.addEventListener('click', () => {
+            console.log("delete from adv")
+          });
+
+
+        } else {
+          // console.log(data[arr[i]]);
+
+          td.innerText = userData[arr[i]] ? userData[arr[i]] : '-';
+        }
+
+        trsAdv[i].appendChild(td);
+        // console.log(storedData[j]);
+      }
       document.forms[0].reset();
+
     }
   });
+
+
 }
 
 // ################################## adv table ########################################
@@ -363,12 +466,16 @@ loadAdvTable();
 
 // ######################### advance table code starts here #####################################
 function createAdvTable() {
+  console.log("hello");
   const advContainer = document.getElementById('adv');
   const table = document.createElement('table');
 
   const tbody = document.createElement('tbody');
 
   const arr = ['userId', 'name', 'gender', 'dob', 'email', 'phone', 'hobbies', 'Actions'];
+
+
+
   const storedData = fetchDataFromLocalStorage().userData;
 
   for (let i = 0; i < arr.length; i++) {
@@ -379,7 +486,7 @@ function createAdvTable() {
     tr.appendChild(th);
     tbody.appendChild(tr);
 
-    for (let j = 0; j < storedData.length; j++) {
+    for (let j = 0; j < storedData?.length; j++) {
       const td = document.createElement('td');
       if (arr[i] === 'Actions') {
         const editBtn = document.createElement('button');
@@ -399,6 +506,16 @@ function createAdvTable() {
           document.forms[0].elements[6].value = tbody.childNodes[6].childNodes[j + 1].innerText;
           document.forms[0].scrollIntoView();
         });
+
+        deleteBtn.addEventListener('click', () => {
+
+          tbody.childNodes.forEach((val) => {
+            // console.log(val.childNodes[j + 1].innerText);
+            val.childNodes[j + 1].remove()
+          })
+          deleteDataFromLocalStorage(storedData[j].userId)
+
+        })
       } else {
         td.innerText = storedData[j][arr[i]] ? storedData[j][arr[i]] : '-';
       }
@@ -407,38 +524,8 @@ function createAdvTable() {
     }
   }
 
-  document.forms[0].elements.submitData.addEventListener('click', () => {
-    const data = getUserData();
-    console.log(Array.from(data.userData).length);
-    if (data.status) {
-      for (let i = 0; i < ad.length; i++) {
-        const td = document.createElement('td');
-        if (arr[i] === 'Actions') {
-          const editBtn = document.createElement('button');
-          editBtn.innerText = 'Edit';
-          const deleteBtn = document.createElement('button');
-          deleteBtn.innerText = 'Delete';
-          td.appendChild(editBtn);
-          td.appendChild(deleteBtn);
 
-          editBtn.addEventListener('click', () => {
-            // console.log(tbody);
-            document.forms[0].elements[0].value = tbody.childNodes[1].childNodes[j + 1].innerText;
-            document.forms[0].elements.gender.value = tbody.childNodes[2].childNodes[j + 1].innerText;
-            document.forms[0].elements[3].value = tbody.childNodes[3].childNodes[j + 1].innerText;
-            document.forms[0].elements[4].value = tbody.childNodes[4].childNodes[j + 1].innerText;
-            document.forms[0].elements[5].value = tbody.childNodes[5].childNodes[j + 1].innerText;
-            document.forms[0].elements[6].value = tbody.childNodes[6].childNodes[j + 1].innerText;
-            document.forms[0].scrollIntoView();
-          });
-        } else {
-          td.innerText = storedData[j][arr[i]] ? storedData[j][arr[i]] : '-';
-        }
-        tr.appendChild(td);
-        // console.log(storedData[j]);
-      }
-    }
-  });
+
 
   table.appendChild(tbody);
   advContainer.appendChild(table);
@@ -451,3 +538,4 @@ function createAdvTable() {
 }
 
 // ######################### advance table code ends here #####################################
+
