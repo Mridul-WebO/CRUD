@@ -407,43 +407,107 @@ function createAdvTable() {
     }
   }
 
-  document.forms[0].elements.submitData.addEventListener('click', () => {
-    const data = getUserData();
-    console.log(Array.from(data.userData).length);
-    if (data.status) {
-      for (let i = 0; i < ad.length; i++) {
-        const td = document.createElement('td');
-        if (arr[i] === 'Actions') {
-          const editBtn = document.createElement('button');
-          editBtn.innerText = 'Edit';
-          const deleteBtn = document.createElement('button');
-          deleteBtn.innerText = 'Delete';
-          td.appendChild(editBtn);
-          td.appendChild(deleteBtn);
-
-          editBtn.addEventListener('click', () => {
-            // console.log(tbody);
-            document.forms[0].elements[0].value = tbody.childNodes[1].childNodes[j + 1].innerText;
-            document.forms[0].elements.gender.value = tbody.childNodes[2].childNodes[j + 1].innerText;
-            document.forms[0].elements[3].value = tbody.childNodes[3].childNodes[j + 1].innerText;
-            document.forms[0].elements[4].value = tbody.childNodes[4].childNodes[j + 1].innerText;
-            document.forms[0].elements[5].value = tbody.childNodes[5].childNodes[j + 1].innerText;
-            document.forms[0].elements[6].value = tbody.childNodes[6].childNodes[j + 1].innerText;
-            document.forms[0].scrollIntoView();
-          });
-        } else {
-          td.innerText = storedData[j][arr[i]] ? storedData[j][arr[i]] : '-';
-        }
-        tr.appendChild(td);
-        // console.log(storedData[j]);
-      }
-    }
-  });
-
   table.appendChild(tbody);
   advContainer.appendChild(table);
 
   //   // ######## submit data ############
+
+  document.forms[0].elements.submitData.addEventListener('click', () => {
+    const advTabledata = getUserData();
+
+    if (true) {
+      // const data = advTabledata.userData
+      const data = {
+        userId: count,
+        name: 'hello',
+        gender: 'Female',
+        dob: '2024-02-02',
+        email: 'hello@gmail.com',
+        phone: '1111111115',
+        hobbies: null,
+      };
+
+      const tdForData = document.createElement('td');
+
+      if (val === 'Actions') {
+        const editBtn = document.createElement('button');
+        editBtn.innerText = 'Edit';
+        const deleteBtn = document.createElement('button');
+        deleteBtn.innerText = 'Delete';
+        tdForData.appendChild(editBtn);
+
+        tdForData.appendChild(deleteBtn);
+
+        // adding eventListers
+
+        editBtn.addEventListener('click', () => {
+          // document.forms[0].elements[0].value =
+          //   document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[1].childNodes[count].innerText;
+
+          // document.forms[0].elements.gender.value =
+          //   document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[2].childNodes[count].innerText;
+          // document.forms[0].elements[3].value =
+          //   document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[3].childNodes[count].innerText;
+
+          // document.forms[0].elements[4].value =
+          //   document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[4].childNodes[count].innerText;
+
+          // document.forms[0].elements[5].value =
+          //   document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[5].childNodes[count].innerText;
+
+          // document.forms[0].elements[5].value = tr.childNodes[5].innerText;
+          // document.forms[0].elements[6].value = tr.childNodes[6].innerText;
+
+          // document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[4].childNodes[count]
+          // document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[5].childNodes[count]
+          // document.forms[0].elements[0].value = tr.childNodes[1].innerText;
+          // document.forms[0].elements[3].value = tr.childNodes[3].innerText;
+          // document.forms[0].elements[4].value = tr.childNodes[4].innerText;
+          // document.forms[0].elements[5].value = tr.childNodes[5].innerText;
+          // document.forms[0].elements[6].value = tr.childNodes[6].innerText;
+
+          // const updateBtn = document.createElement('button');
+          // updateBtn.innerText = 'Update';
+          // const cancelBtn = document.createElement('button');
+          // cancelBtn.innerText = 'cancel';
+          // document.forms[0].elements.submitData.style.display = 'none';
+          // document.forms[0].childNodes[13].childNodes[3].appendChild(updateBtn);
+          // document.forms[0].childNodes[13].childNodes[3].appendChild(cancelBtn);
+
+          // updateBtn.addEventListener('click', () => {
+          //   if (getUserData().status) {
+          //     const data = getUserData(parseInt(tr.childNodes[0].innerText)).userData;
+
+          //     tr.childNodes[1].innerText = data.name;
+          //     tr.childNodes[2].innerText = data.gender;
+          //     tr.childNodes[3].innerText = data.dob;
+          //     tr.childNodes[4].innerText = data.email;
+          //     tr.childNodes[5].innerText = data.phone ? data.phone : '-';
+
+          //     tr.childNodes[6].innerText = Array.from(document.forms[0].elements.hobbies)
+          //       .filter((val) => val.checked)
+          //       .map((val) => val.value)
+          //       .join(', ');
+
+          //     document.forms[0].childNodes[13].childNodes[3].removeChild(updateBtn);
+          //     document.forms[0].childNodes[13].childNodes[3].removeChild(cancelBtn);
+          //     document.forms[0].elements.submitData.style.display = 'block';
+          //     updateDataInLocalStorage(data);
+          //     setTimeout(() => {
+          //       alert('Data updated successfully!!');
+          //     }, 10);
+          //   }
+          // });
+
+          document.forms[0].scrollIntoView();
+        });
+      } else {
+        // tdForData.innerText = data[val];
+      }
+
+      // tr.appendChild(tdForData);
+    }
+  });
 
   // tbody.appendChild(tr);
 
