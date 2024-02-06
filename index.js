@@ -528,7 +528,66 @@ function createAdvTable() {
     }
   }
 
-  document.forms[0].elements.submitData.addEventListener('click', () => {});
+  document.forms[0].elements.submitData.addEventListener('click', () => {
+    const trsAdv = document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes;
+
+    const arr = ['userId', 'name', 'gender', 'dob', 'email', 'phone', 'hobbies', 'Actions'];
+
+    // ADV table
+
+    for (let i = 0; i < arr.length; i++) {
+      const td = document.createElement('td');
+      if (arr[i] === 'Actions') {
+        const editBtn = document.createElement('button');
+        editBtn.innerText = 'Edit';
+        const deleteBtn = document.createElement('button');
+        deleteBtn.innerText = 'Delete';
+        td.appendChild(editBtn);
+        td.appendChild(deleteBtn);
+
+        editBtn.addEventListener('click', () => {
+          // console.log(tbody);
+          // document.forms[0].elements[0].value =
+          //   document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[1].childNodes[
+          //     userData.userId
+          //   ].innerText;
+          // document.forms[0].elements.gender.value =
+          //   document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[2].childNodes[
+          //     userData.userId
+          //   ].innerText;
+          // document.forms[0].elements[3].value =
+          //   document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[3].childNodes[
+          //     userData.userId
+          //   ].innerText;
+          // document.forms[0].elements[4].value =
+          //   document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[4].childNodes[
+          //     userData.userId
+          //   ].innerText;
+          // document.forms[0].elements[5].value =
+          //   document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[5].childNodes[
+          //     userData.userId
+          //   ].innerText;
+          // document.forms[0].elements[6].value =
+          //   document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[6].childNodes[
+          //     userData.userId
+          //   ].innerText;
+          // document.forms[0].scrollIntoView();
+        });
+
+        deleteBtn.addEventListener('click', () => {
+          // console.log('delete from adv');
+        });
+      } else {
+        // console.log(data[arr[i]]);
+        // console.log('hello');
+
+        td.innerText = userData[arr[i]] ? userData[arr[i]] : '-';
+      }
+
+      trsAdv[i].appendChild(td);
+      // console.log(storedData[j]);
+    }
+  });
 
   table.appendChild(tbody);
   advContainer.appendChild(table);
