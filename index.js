@@ -7,10 +7,8 @@ import {
   deleteDataFromLocalStorage,
   clearLocalStorage,
   updateDataInLocalStorage,
-  counter
+  counter,
 } from '../storage.js';
-
-
 
 document.forms[0].elements.dob.max = new Date().toISOString().split('T')[0]; // to prevent selection of future dates in datepicker
 
@@ -20,7 +18,7 @@ document.forms[0].elements.dob.max = new Date().toISOString().split('T')[0]; // 
 //   return userId;
 // }
 
-function getUserData(id) {
+function getUserData(updateElmentId) {
   const name = document.forms[0].elements.name;
   const gender = document.forms[0].elements.gender;
   const dob = document.forms[0].elements.dob;
@@ -30,7 +28,6 @@ function getUserData(id) {
     .filter((val) => val.checked)
     .map((val) => val.value)
     .join(', ');
-
 
   // console.log(userId);
 
@@ -58,10 +55,18 @@ function getUserData(id) {
     email.setCustomValidity('');
   }
 
+  if (phone.value === '') {
+    phone.setCustomValidity('Phone number is required!!');
+  } else if (!phone.value.match(/^\d{10}$/)) {
+    phone.setCustomValidity('invalid phone number');
+  } else {
+    phone.setCustomValidity('');
+  }
+
   // console.log(gender.value);
 
-  if (name.validity.valid && dob.validity.valid && email.validity.valid) {
-    const userId = counter()
+  if (name.validity.valid && dob.validity.valid && email.validity.valid && phone.validity.valid) {
+    const userId = updateElmentId || counter();
     const userData = {
       userId: userId,
       name: name.value,
@@ -74,8 +79,6 @@ function getUserData(id) {
 
     return { userData: userData, status: true };
   } else {
-
-
     return { status: false };
   }
 }
@@ -92,7 +95,6 @@ document.forms[0].elements.name.addEventListener('keyup', (e) => {
 });
 
 document.forms[0].elements.dob.addEventListener('focus', (e) => {
-
   if (e.target.value === '') {
     e.target.setCustomValidity('Date of birth is required!!');
   } else {
@@ -111,11 +113,20 @@ document.forms[0].elements.email.addEventListener('keyup', (e) => {
 
   e.target.reportValidity();
 });
-// document.forms[0].elements.phone.addEventListener('keyup', (e) => {
-//   e.target.setCustomValidity('fields cannot be empty!!')
-
-//   console.log(e.target.validationMessage);
-// })
+document.forms[0].elements.phone.addEventListener('keyup', (e) => {
+  console.log(e.target.value);
+  if (e.target.value === '') {
+    e.target.setCustomValidity('Phone number is required!!');
+    // console.log('flag1');
+    // e.target.validity.valid = true;
+  } else if (!e.target.value.match(/^\d{10}$/)) {
+    // console.log('flag2');
+    e.target.setCustomValidity('please enter a valid 10 digit phone number');
+  } else {
+    // console.log('flag3');
+    e.target.setCustomValidity('');
+  }
+});
 
 function loadBasicTable() {
   const body = document.body;
@@ -192,13 +203,16 @@ function createBasicTable() {
       const cancelBtn = document.createElement('button');
       cancelBtn.innerText = 'cancel';
 
-      storedData.forEach((val) => {
-        console.log(val);
-
+      storedData.forEach((val, index) => {
+        // console.log(val);
         const tr = document.createElement('tr');
         for (let x in val) {
           const td = document.createElement('td');
-          td.innerText = val[x] ?? '-';
+          if (x === 'userId') {
+            td.innerText = index + 1;
+          } else {
+            td.innerText = val[x] ?? '-';
+          }
 
           tr.appendChild(td);
         }
@@ -214,10 +228,7 @@ function createBasicTable() {
         tr.appendChild(td);
         tbody.appendChild(tr);
 
-
-
         editBtn.addEventListener('click', () => {
-
           // document.forms[]
 
           document.forms[0].elements[0].value = tr.childNodes[1].innerText;
@@ -225,9 +236,7 @@ function createBasicTable() {
           document.forms[0].elements[3].value = tr.childNodes[3].innerText;
           document.forms[0].elements[4].value = tr.childNodes[4].innerText;
           document.forms[0].elements[5].value = tr.childNodes[5].innerText === '-' ? '' : tr.childNodes[5].innerText;
-          // document.forms[0].elements[6].value = tr.childNodes[6].innerText;
-          // document.forms[0].elements[7].value =
-          // console.log(tr.childNodes[6]);
+
           tr.childNodes[6].innerText !== '-' &&
             tr.childNodes[6].innerText.split(',').forEach((val, index) => {
               // console.log(val, index);
@@ -239,14 +248,11 @@ function createBasicTable() {
 
           // show update and cancel button in form
 
-
           document.forms[0].elements.submitData.style.display = 'none';
 
           document.forms[0].childNodes[13].childNodes[3].appendChild(updateBtn);
           document.forms[0].childNodes[13].childNodes[3].appendChild(cancelBtn);
-          document.forms[0].scrollIntoView()
-
-
+          document.forms[0].scrollIntoView();
         });
 
         updateBtn.addEventListener('click', () => {
@@ -268,7 +274,7 @@ function createBasicTable() {
             document.forms[0].childNodes[13].childNodes[3].removeChild(cancelBtn);
             document.forms[0].elements.submitData.style.display = 'block';
             updateDataInLocalStorage(data);
-            document.forms[0].reset()
+            document.forms[0].reset();
             setTimeout(() => {
               alert('Data updated successfully!!');
             }, 10);
@@ -276,9 +282,10 @@ function createBasicTable() {
         });
 
         deleteBtn.addEventListener('click', () => {
-          console.log(tr);
+          // console.log(tr.childNodes[0].innerText);
           document.body.childNodes[13].childNodes[2].childNodes[0].childNodes[1].removeChild(tr);
-          deleteDataFromLocalStorage(parseInt(tr.childNodes[0].innerText));
+          // console.log(parseInt(tr.childNodes[0].innerText));
+          deleteDataFromLocalStorage(val.userId);
         });
       });
 
@@ -290,16 +297,16 @@ function createBasicTable() {
 
   function createNewRow(userInputData) {
     const data = userInputData;
+    // console.log('%%%', userInputData);
 
     const updateBtn = document.createElement('button');
     updateBtn.innerText = 'Update';
     const cancelBtn = document.createElement('button');
     cancelBtn.innerText = 'cancel';
 
-
     const tr = document.createElement('tr');
     for (let x in data) {
-      // console.log(x);
+      // console.log('asasas', x);
       const td = document.createElement('td');
       tr.appendChild(td);
       td.innerText = data[x] ?? '-';
@@ -320,15 +327,12 @@ function createBasicTable() {
       document.forms[0].elements[5].value = tr.childNodes[5].innerText;
       document.forms[0].elements[6].value = tr.childNodes[6].innerText;
 
-
       document.forms[0].elements.submitData.style.display = 'none';
 
       document.forms[0].childNodes[13].childNodes[3].appendChild(updateBtn);
       document.forms[0].childNodes[13].childNodes[3].appendChild(cancelBtn);
 
-      document.forms[0].scrollTop()
-
-
+      document.forms[0].scrollIntoView();
     });
 
     updateBtn.addEventListener('click', () => {
@@ -350,21 +354,19 @@ function createBasicTable() {
         document.forms[0].childNodes[13].childNodes[3].removeChild(cancelBtn);
         document.forms[0].elements.submitData.style.display = 'block';
         updateDataInLocalStorage(data);
-        document.forms[0].reset()
+        document.forms[0].reset();
         setTimeout(() => {
           alert('Data updated successfully!!');
         }, 10);
       }
     });
 
-    cancelBtn.addEventListener('click', () => {
-
-    })
+    cancelBtn.addEventListener('click', () => {});
 
     deleteBtn.addEventListener('click', () => {
-      console.log(tr);
-      document.body.lastChild.childNodes[2].childNodes[0].childNodes[1].removeChild(tr);
-      deleteDataFromLocalStorage(parseInt(tr.childNodes[0].innerText));
+      // console.log(tr);
+      document.body.childNodes[13].childNodes[2].childNodes[0].childNodes[1].removeChild(tr);
+      deleteDataFromLocalStorage(data.userId);
     });
 
     tbody.appendChild(tr);
@@ -372,26 +374,21 @@ function createBasicTable() {
     table.appendChild(tbody);
   }
 
-
   document.forms[0].elements.submitData.addEventListener('click', () => {
-
-    const { userData, status } = getUserData()
+    const { userData, status } = getUserData();
 
     const trsAdv = document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes;
 
     const arr = ['userId', 'name', 'gender', 'dob', 'email', 'phone', 'hobbies', 'Actions'];
 
-
     if (status) {
+      // Basic table
 
-
-
-      // console.log(userData);
       setDataIntoLocalStorage(userData);
-      // console.log(valid);
       createNewRow(userData);
       checkData();
 
+      // ADV table
 
       for (let i = 0; i < arr.length; i++) {
         // console.log(trsAdv[i].childNodes[0]);
@@ -406,22 +403,39 @@ function createBasicTable() {
 
           editBtn.addEventListener('click', () => {
             // console.log(tbody);
-            document.forms[0].elements[0].value = document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[1].childNodes[userData.userId].innerText;
-            document.forms[0].elements.gender.value = document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[2].childNodes[userData.userId].innerText;
-            document.forms[0].elements[3].value = document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[3].childNodes[userData.userId].innerText;
-            document.forms[0].elements[4].value = document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[4].childNodes[userData.userId].innerText;
-            document.forms[0].elements[5].value = document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[5].childNodes[userData.userId].innerText;
-            document.forms[0].elements[6].value = document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[6].childNodes[userData.userId].innerText;
+            document.forms[0].elements[0].value =
+              document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[1].childNodes[
+                userData.userId
+              ].innerText;
+            document.forms[0].elements.gender.value =
+              document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[2].childNodes[
+                userData.userId
+              ].innerText;
+            document.forms[0].elements[3].value =
+              document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[3].childNodes[
+                userData.userId
+              ].innerText;
+            document.forms[0].elements[4].value =
+              document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[4].childNodes[
+                userData.userId
+              ].innerText;
+            document.forms[0].elements[5].value =
+              document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[5].childNodes[
+                userData.userId
+              ].innerText;
+            document.forms[0].elements[6].value =
+              document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[6].childNodes[
+                userData.userId
+              ].innerText;
             document.forms[0].scrollIntoView();
           });
 
           deleteBtn.addEventListener('click', () => {
-            console.log("delete from adv")
+            // console.log('delete from adv');
           });
-
-
         } else {
           // console.log(data[arr[i]]);
+          // console.log('hello');
 
           td.innerText = userData[arr[i]] ? userData[arr[i]] : '-';
         }
@@ -430,11 +444,8 @@ function createBasicTable() {
         // console.log(storedData[j]);
       }
       document.forms[0].reset();
-
     }
   });
-
-
 }
 
 // ################################## adv table ########################################
@@ -464,21 +475,16 @@ function loadAdvTable() {
   advTable.setAttribute('id', 'adv');
   main_container.appendChild(advTable);
 
-
-
   body.appendChild(main_container);
 
   createAdvTable();
-
-
 }
 
 loadAdvTable();
 
 // ######################### advance table code starts here #####################################
 function createAdvTable() {
-  console.log("hello");
-
+  // console.log('hello');
 
   const advContainer = document.getElementById('adv');
   const table = document.createElement('table');
@@ -513,81 +519,81 @@ function createAdvTable() {
         td.appendChild(deleteBtn);
 
         editBtn.addEventListener('click', () => {
-          // console.log(tbody);
           document.forms[0].elements[0].value = tbody.childNodes[1].childNodes[j + 1].innerText;
           document.forms[0].elements.gender.value = tbody.childNodes[2].childNodes[j + 1].innerText;
           document.forms[0].elements[3].value = tbody.childNodes[3].childNodes[j + 1].innerText;
           document.forms[0].elements[4].value = tbody.childNodes[4].childNodes[j + 1].innerText;
-          document.forms[0].elements[5].value = tbody.childNodes[5].childNodes[j + 1].innerText;
-          document.forms[0].elements[6].value = tbody.childNodes[6].childNodes[j + 1].innerText;
+          document.forms[0].elements[5].value =
+            tbody.childNodes[5].childNodes[j + 1].innerText === '-'
+              ? ''
+              : tbody.childNodes[5].childNodes[j + 1].innerText;
+
+          // hobbies
+          // console.log(tbody.childNodes[6].childNodes[j + 1].innerText.split(','));
+
+          tbody.childNodes[6].childNodes[j + 1].innerText !== '-' &&
+            tbody.childNodes[6].childNodes[j + 1].innerText.split(',').forEach((val, index) => {
+              // console.log(document.forms[0].elements.hobbies[val]);
+              console.log(val);
+
+              // if (document.forms[0].elements.hobbies[index].value === val.trim()) {
+              //   console.log('andar', val.trim());
+              //   document.forms[0].elements.hobbies[j + 1].checked = true;
+              // }
+            });
 
           document.forms[0].elements.submitData.style.display = 'none';
           document.forms[0].childNodes[13].childNodes[3].appendChild(updateBtn);
           document.forms[0].childNodes[13].childNodes[3].appendChild(cancelBtn);
 
-
           document.forms[0].scrollIntoView();
+
+          updateBtn.addEventListener('click', () => {
+            const { userData, status } = getUserData(j + 1);
+            if (status) {
+              console.log();
+              tbody.childNodes[1].childNodes[j + 1].innerText = userData.name;
+              tbody.childNodes[2].childNodes[j + 1].innerText = userData.gender;
+              tbody.childNodes[3].childNodes[j + 1].innerText = userData.dob;
+              tbody.childNodes[4].childNodes[j + 1].innerText = userData.email;
+              tbody.childNodes[5].childNodes[j + 1].innerText = userData.phone ? userData.phone : '-';
+              tbody.childNodes[6].childNodes[j + 1].innerText;
+              tr.childNodes[6].childNodes[1].innerText = Array.from(document.forms[0].elements.hobbies)
+                .filter((val) => val.checked)
+                .map((val) => val.value)
+                .join(', ');
+              document.forms[0].childNodes[13].childNodes[3].removeChild(updateBtn);
+              document.forms[0].childNodes[13].childNodes[3].removeChild(cancelBtn);
+              document.forms[0].elements.submitData.style.display = 'block';
+              updateDataInLocalStorage(userData);
+              document.forms[0].reset();
+              setTimeout(() => {
+                alert('Data updated successfully!!');
+              }, 10);
+            }
+          });
         });
 
-
-        updateBtn.addEventListener('click', () => {
-          const { userData, status } = getUserData()
-          if (true) {
-            const data = getUserData(parseInt(tr.childNodes[0].innerText)).userData;
-            console.log(data);
-
-            //         tbody.childNodes[1].childNodes[j + 1].innerText   =  userData.name;
-            // tbody.childNodes[2].childNodes[j + 1].innerText  = userData.gender;
-            // tbody.childNodes[3].childNodes[j + 1].innerText    = userData.dob;
-            // tbody.childNodes[4].childNodes[j + 1].innerText   = userData.email;
-            // tbody.childNodes[5].childNodes[j + 1].innerText; = = userData.phone ? data.phone : '-';
-            // tbody.childNodes[6].childNodes[j + 1].innerText;
-
-
-
-
-
-
-
-            //         tr.childNodes[6].innerText = Array.from(document.forms[0].elements.hobbies)
-            //           .filter((val) => val.checked)
-            //           .map((val) => val.value)
-            //           .join(', ');
-
-            //         document.forms[0].childNodes[13].childNodes[3].removeChild(updateBtn);
-            //         document.forms[0].childNodes[13].childNodes[3].removeChild(cancelBtn);
-            //         document.forms[0].elements.submitData.style.display = 'block';
-            //         updateDataInLocalStorage(data);
-            //         document.forms[0].reset()
-            //         setTimeout(() => {
-            //           alert('Data updated successfully!!');
-            //         }, 10);
-          }
-        });
-
-        cancelBtn.addEventListener('click', () => {
-
-        })
+        cancelBtn.addEventListener('click', () => {});
 
         deleteBtn.addEventListener('click', () => {
-
           tbody.childNodes.forEach((val) => {
             // console.log(val.childNodes[j + 1].innerText);
-            val.childNodes[j + 1].remove()
-          })
-          deleteDataFromLocalStorage(storedData[j].userId)
-
-        })
+            val.childNodes[j + 1].remove();
+          });
+          deleteDataFromLocalStorage(storedData[j].userId);
+        });
       } else {
-        td.innerText = storedData[j][arr[i]] ? storedData[j][arr[i]] : '-';
+        if (arr[i] === 'userId') {
+          td.innerText = j + 1;
+        } else {
+          td.innerText = storedData[j][arr[i]] ? storedData[j][arr[i]] : '-';
+        }
       }
       tr.appendChild(td);
       // console.log(storedData[j]);
     }
   }
-
-
-
 
   table.appendChild(tbody);
   advContainer.appendChild(table);
@@ -601,3 +607,5 @@ function createAdvTable() {
 
 // ######################### advance table code ends here #####################################
 
+var id = 'id' + Math.random().toString(16).slice(2);
+console.log(id);
