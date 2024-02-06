@@ -67,14 +67,7 @@ if (!localStorage.getItem('count') || fetchDataFromLocalStorage().isEmpty) {
 }
 
 export function counter() {
-  const { isEmpty } = fetchDataFromLocalStorage();
-  let count;
-  if (isEmpty) {
-    count = 1;
-  } else {
-    count = fetchDataFromLocalStorage().userData.length + 1;
-  }
-  // console.log(inc);
-  localStorage.setItem('count', count);
-  return count;
+  var id = 'id' + Math.random().toString(16).slice(2);
+
+  return id;
 }

@@ -12,12 +12,6 @@ import {
 
 document.forms[0].elements.dob.max = new Date().toISOString().split('T')[0]; // to prevent selection of future dates in datepicker
 
-// function getUserId() {
-//   const userId = !fetchDataFromLocalStorage().isEmpty ? fetchDataFromLocalStorage().userData.length + 1 : 1;
-
-//   return userId;
-// }
-
 function getUserData(updateElmentId) {
   const name = document.forms[0].elements.name;
   const gender = document.forms[0].elements.gender;
@@ -28,10 +22,6 @@ function getUserData(updateElmentId) {
     .filter((val) => val.checked)
     .map((val) => val.value)
     .join(', ');
-
-  // console.log(userId);
-
-  // return userData;
 
   if (name.value === '') {
     name.setCustomValidity('name is required!!');
@@ -117,13 +107,9 @@ document.forms[0].elements.phone.addEventListener('keyup', (e) => {
   console.log(e.target.value);
   if (e.target.value === '') {
     e.target.setCustomValidity('Phone number is required!!');
-    // console.log('flag1');
-    // e.target.validity.valid = true;
   } else if (!e.target.value.match(/^\d{10}$/)) {
-    // console.log('flag2');
     e.target.setCustomValidity('please enter a valid 10 digit phone number');
   } else {
-    // console.log('flag3');
     e.target.setCustomValidity('');
   }
 });
@@ -162,8 +148,10 @@ function loadBasicTable() {
 function checkData() {
   if (!fetchDataFromLocalStorage().isEmpty) {
     document.body.childNodes[13].style.display = 'block';
+    document.body.lastChild.style.display = 'block';
   } else {
     document.body.childNodes[13].style.display = 'none';
+    document.body.lastChild.style.display = 'none';
   }
 }
 
@@ -198,13 +186,13 @@ function createBasicTable() {
       document.body.childNodes[13].childNodes[2].childNodes[0].appendChild(tbody);
 
       const storedData = fetchDataFromLocalStorage().userData;
+      // console.log();
       const updateBtn = document.createElement('button');
       updateBtn.innerText = 'Update';
       const cancelBtn = document.createElement('button');
       cancelBtn.innerText = 'cancel';
 
       storedData.forEach((val, index) => {
-        // console.log(val);
         const tr = document.createElement('tr');
         for (let x in val) {
           const td = document.createElement('td');
@@ -256,14 +244,13 @@ function createBasicTable() {
         });
 
         updateBtn.addEventListener('click', () => {
-          if (getUserData().status) {
-            const data = getUserData(parseInt(tr.childNodes[0].innerText)).userData;
-
-            tr.childNodes[1].innerText = data.name;
-            tr.childNodes[2].innerText = data.gender;
-            tr.childNodes[3].innerText = data.dob;
-            tr.childNodes[4].innerText = data.email;
-            tr.childNodes[5].innerText = data.phone ? data.phone : '-';
+          const { userData, status } = getUserData(val.userId);
+          if (status) {
+            tr.childNodes[1].innerText = userData.name;
+            tr.childNodes[2].innerText = userData.gender;
+            tr.childNodes[3].innerText = userData.dob;
+            tr.childNodes[4].innerText = userData.email;
+            tr.childNodes[5].innerText = userData.phone ? userData.phone : '-';
 
             tr.childNodes[6].innerText = Array.from(document.forms[0].elements.hobbies)
               .filter((val) => val.checked)
@@ -273,7 +260,7 @@ function createBasicTable() {
             document.forms[0].childNodes[13].childNodes[3].removeChild(updateBtn);
             document.forms[0].childNodes[13].childNodes[3].removeChild(cancelBtn);
             document.forms[0].elements.submitData.style.display = 'block';
-            updateDataInLocalStorage(data);
+            updateDataInLocalStorage(userData);
             document.forms[0].reset();
             setTimeout(() => {
               alert('Data updated successfully!!');
@@ -297,7 +284,7 @@ function createBasicTable() {
 
   function createNewRow(userInputData) {
     const data = userInputData;
-    // console.log('%%%', userInputData);
+    console.log('%%%', userInputData);
 
     const updateBtn = document.createElement('button');
     updateBtn.innerText = 'Update';
@@ -306,10 +293,14 @@ function createBasicTable() {
 
     const tr = document.createElement('tr');
     for (let x in data) {
-      // console.log('asasas', x);
       const td = document.createElement('td');
+      if (x === 'userId') {
+        console.log(fetchDataFromLocalStorage().userData.length);
+        td.innerText = fetchDataFromLocalStorage().userData.length;
+      } else {
+        td.innerText = data[x] ?? '-';
+      }
       tr.appendChild(td);
-      td.innerText = data[x] ?? '-';
     }
     const td = document.createElement('td');
     const editBtn = document.createElement('button');
@@ -336,14 +327,15 @@ function createBasicTable() {
     });
 
     updateBtn.addEventListener('click', () => {
-      if (getUserData().status) {
-        const data = getUserData(parseInt(tr.childNodes[0].innerText)).userData;
+      const { userData, status } = getUserData(userInputData.userId);
+      if (status) {
+        // const data = getUserData(parseInt(tr.childNodes[0].innerText)).userData;
 
-        tr.childNodes[1].innerText = data.name;
-        tr.childNodes[2].innerText = data.gender;
-        tr.childNodes[3].innerText = data.dob;
-        tr.childNodes[4].innerText = data.email;
-        tr.childNodes[5].innerText = data.phone ? data.phone : '-';
+        tr.childNodes[1].innerText = userData.name;
+        tr.childNodes[2].innerText = userData.gender;
+        tr.childNodes[3].innerText = userData.dob;
+        tr.childNodes[4].innerText = userData.email;
+        tr.childNodes[5].innerText = userData.phone ? userData.phone : '-';
 
         tr.childNodes[6].innerText = Array.from(document.forms[0].elements.hobbies)
           .filter((val) => val.checked)
@@ -353,7 +345,7 @@ function createBasicTable() {
         document.forms[0].childNodes[13].childNodes[3].removeChild(updateBtn);
         document.forms[0].childNodes[13].childNodes[3].removeChild(cancelBtn);
         document.forms[0].elements.submitData.style.display = 'block';
-        updateDataInLocalStorage(data);
+        updateDataInLocalStorage(userData);
         document.forms[0].reset();
         setTimeout(() => {
           alert('Data updated successfully!!');
@@ -377,72 +369,12 @@ function createBasicTable() {
   document.forms[0].elements.submitData.addEventListener('click', () => {
     const { userData, status } = getUserData();
 
-    const trsAdv = document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes;
-
-    const arr = ['userId', 'name', 'gender', 'dob', 'email', 'phone', 'hobbies', 'Actions'];
-
     if (status) {
       // Basic table
 
       setDataIntoLocalStorage(userData);
       createNewRow(userData);
       checkData();
-
-      // ADV table
-
-      for (let i = 0; i < arr.length; i++) {
-        // console.log(trsAdv[i].childNodes[0]);
-        const td = document.createElement('td');
-        if (arr[i] === 'Actions') {
-          const editBtn = document.createElement('button');
-          editBtn.innerText = 'Edit';
-          const deleteBtn = document.createElement('button');
-          deleteBtn.innerText = 'Delete';
-          td.appendChild(editBtn);
-          td.appendChild(deleteBtn);
-
-          editBtn.addEventListener('click', () => {
-            // console.log(tbody);
-            document.forms[0].elements[0].value =
-              document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[1].childNodes[
-                userData.userId
-              ].innerText;
-            document.forms[0].elements.gender.value =
-              document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[2].childNodes[
-                userData.userId
-              ].innerText;
-            document.forms[0].elements[3].value =
-              document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[3].childNodes[
-                userData.userId
-              ].innerText;
-            document.forms[0].elements[4].value =
-              document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[4].childNodes[
-                userData.userId
-              ].innerText;
-            document.forms[0].elements[5].value =
-              document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[5].childNodes[
-                userData.userId
-              ].innerText;
-            document.forms[0].elements[6].value =
-              document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[6].childNodes[
-                userData.userId
-              ].innerText;
-            document.forms[0].scrollIntoView();
-          });
-
-          deleteBtn.addEventListener('click', () => {
-            // console.log('delete from adv');
-          });
-        } else {
-          // console.log(data[arr[i]]);
-          // console.log('hello');
-
-          td.innerText = userData[arr[i]] ? userData[arr[i]] : '-';
-        }
-
-        trsAdv[i].appendChild(td);
-        // console.log(storedData[j]);
-      }
       document.forms[0].reset();
     }
   });
@@ -478,6 +410,7 @@ function loadAdvTable() {
   body.appendChild(main_container);
 
   createAdvTable();
+  checkData();
 }
 
 loadAdvTable();
@@ -595,6 +528,8 @@ function createAdvTable() {
     }
   }
 
+  document.forms[0].elements.submitData.addEventListener('click', () => {});
+
   table.appendChild(tbody);
   advContainer.appendChild(table);
 
@@ -606,6 +541,3 @@ function createAdvTable() {
 }
 
 // ######################### advance table code ends here #####################################
-
-var id = 'id' + Math.random().toString(16).slice(2);
-console.log(id);
