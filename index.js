@@ -104,7 +104,6 @@ document.forms[0].elements.email.addEventListener('keyup', (e) => {
   e.target.reportValidity();
 });
 document.forms[0].elements.phone.addEventListener('keyup', (e) => {
-  console.log(e.target.value);
   if (e.target.value === '') {
     e.target.setCustomValidity('Phone number is required!!');
   } else if (!e.target.value.match(/^\d{10}$/)) {
@@ -268,6 +267,13 @@ function createBasicTable() {
           }
         });
 
+        cancelBtn.addEventListener('click', () => {
+          document.forms[0].reset();
+          document.forms[0].childNodes[13].childNodes[3].removeChild(updateBtn);
+          document.forms[0].childNodes[13].childNodes[3].removeChild(cancelBtn);
+          document.forms[0].elements.submitData.style.display = 'block';
+        });
+
         deleteBtn.addEventListener('click', () => {
           // console.log(tr.childNodes[0].innerText);
           document.body.childNodes[13].childNodes[2].childNodes[0].childNodes[1].removeChild(tr);
@@ -353,7 +359,12 @@ function createBasicTable() {
       }
     });
 
-    cancelBtn.addEventListener('click', () => {});
+    cancelBtn.addEventListener('click', () => {
+      document.forms[0].reset();
+      document.forms[0].childNodes[13].childNodes[3].removeChild(updateBtn);
+      document.forms[0].childNodes[13].childNodes[3].removeChild(cancelBtn);
+      document.forms[0].elements.submitData.style.display = 'block';
+    });
 
     deleteBtn.addEventListener('click', () => {
       // console.log(tr);
@@ -484,7 +495,7 @@ function createAdvTable() {
           updateBtn.addEventListener('click', () => {
             const { userData, status } = getUserData(j + 1);
             if (status) {
-              console.log();
+              // console.log();
               tbody.childNodes[1].childNodes[j + 1].innerText = userData.name;
               tbody.childNodes[2].childNodes[j + 1].innerText = userData.gender;
               tbody.childNodes[3].childNodes[j + 1].innerText = userData.dob;
@@ -507,7 +518,12 @@ function createAdvTable() {
           });
         });
 
-        cancelBtn.addEventListener('click', () => {});
+        cancelBtn.addEventListener('click', () => {
+          document.forms[0].childNodes[13].childNodes[3].removeChild(updateBtn);
+          document.forms[0].childNodes[13].childNodes[3].removeChild(cancelBtn);
+          document.forms[0].elements.submitData.style.display = 'block';
+          document.forms[0].reset();
+        });
 
         deleteBtn.addEventListener('click', () => {
           tbody.childNodes.forEach((val) => {
@@ -534,6 +550,7 @@ function createAdvTable() {
     const arr = ['userId', 'name', 'gender', 'dob', 'email', 'phone', 'hobbies', 'Actions'];
 
     // ADV table
+    const { userData, status } = getUserData();
 
     for (let i = 0; i < arr.length; i++) {
       const td = document.createElement('td');
@@ -545,43 +562,23 @@ function createAdvTable() {
         td.appendChild(editBtn);
         td.appendChild(deleteBtn);
 
-        editBtn.addEventListener('click', () => {
-          // console.log(tbody);
-          // document.forms[0].elements[0].value =
-          //   document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[1].childNodes[
-          //     userData.userId
-          //   ].innerText;
-          // document.forms[0].elements.gender.value =
-          //   document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[2].childNodes[
-          //     userData.userId
-          //   ].innerText;
-          // document.forms[0].elements[3].value =
-          //   document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[3].childNodes[
-          //     userData.userId
-          //   ].innerText;
-          // document.forms[0].elements[4].value =
-          //   document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[4].childNodes[
-          //     userData.userId
-          //   ].innerText;
-          // document.forms[0].elements[5].value =
-          //   document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[5].childNodes[
-          //     userData.userId
-          //   ].innerText;
-          // document.forms[0].elements[6].value =
-          //   document.body.lastChild.childNodes[2].childNodes[0].childNodes[0].childNodes[6].childNodes[
-          //     userData.userId
-          //   ].innerText;
-          // document.forms[0].scrollIntoView();
-        });
+        // editBtn.addEventListener('click', () => {});
 
-        deleteBtn.addEventListener('click', () => {
-          // console.log('delete from adv');
-        });
+        // cancelBtn.addEventListener('click', () => {
+        //   document.forms[0].childNodes[13].childNodes[3].removeChild(updateBtn);
+        //   document.forms[0].childNodes[13].childNodes[3].removeChild(cancelBtn);
+        //   document.forms[0].elements.submitData.style.display = 'block';
+        //   document.forms[0].reset();
+        // });
+
+        // deleteBtn.addEventListener('click', () => {
+        //   // console.log('delete from adv');
+        // });
       } else {
-        // console.log(data[arr[i]]);
+        console.log(userData);
         // console.log('hello');
-
-        td.innerText = userData[arr[i]] ? userData[arr[i]] : '-';
+        // console.log(storedData);
+        // td.innerText = storedData[arr[i]] ? storedData[arr[i]] : '-';
       }
 
       trsAdv[i].appendChild(td);
