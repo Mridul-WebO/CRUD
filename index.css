@@ -152,17 +152,26 @@ td {
   } */
 }
 @media only screen and (max-width: 1200px) and (min-width: 992px) {
+  #basic > tbody > tr > td:last-child button {
+    margin-top: 5px;
+  }
+  #adv > tbody > tr:last-child button {
+    margin-top: 5px;
+  }
 }
-@media only screen and (max-width: 992px) and (min-width: 768px) {
-}
-
-@media only screen and (max-width: 768px) and (min-width: 576px) {
-}
-
-@media only screen and (max-width: 768px) and (min-width: 576px) {
+@media only screen and (max-width: 992px) and (min-width: 576px) {
+  #basic > tbody > tr > td:last-child button {
+    margin-top: 5px;
+  }
+  #adv > tbody > tr:last-child button {
+    margin-top: 5px;
+  }
 }
 
 @media only screen and (max-width: 576px) {
+  #basic > tbody > tr > td:last-child button {
+    margin-top: 5px;
+  }
   #navbar-container {
     margin: 0 10px;
   }
