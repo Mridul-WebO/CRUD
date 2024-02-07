@@ -22,7 +22,7 @@
           <div class="row">
             <div class="col">Name:</div>
             <div class="col">
-              <input type="text" name="name" id="name" placeholder="Enter name" onchange="errorHandling(this.name)" />
+              <input type="text" name="name" id="name" placeholder="Enter name" onkeyup="errorHandling(this.name)" />
               <div class="error-name"></div>
             </div>
           </div>
@@ -51,7 +51,7 @@
                 name="email"
                 id="email"
                 placeholder="Enter email"
-                onchange="errorHandling(this.name)"
+                onkeyup="errorHandling(this.name)"
               />
               <div class="error-email"></div>
             </div>
@@ -59,7 +59,8 @@
           <div class="row">
             <div class="col">Phone:</div>
             <div class="col">
-              <input type="tel" name="phone" id="phone" placeholder="Enter phone" />
+              <input type="tel" name="phone" id="phone" placeholder="Enter phone" onkeyup="errorHandling(this.name)" />
+              <div class="error-phone"></div>
             </div>
           </div>
           <div class="row">
@@ -129,6 +130,7 @@
               <td>12345678</td>
               <td>music</td>
               <td>
+
                 <button onclick="">edit</button>
                 <button class="btn" onclick="deleteData()">Delete</button>
               </td>

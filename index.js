@@ -1,21 +1,27 @@
-// Regrex expressions
+// ############################################# Regrex expressions ###########################################
+
+// restricted future dates selection
+document.forms[0].elements.dob.max = new Date().toISOString().split('T')[0];
 
 const regrexEmail = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{1,5})$/;
-// const regrexPhone = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+const regrexPhone = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/;
 
-const dummyData = localStorage.getItem('dummyData') ? JSON.parse(localStorage.getItem('dummyData')) : [];
+// ################################################## Global declarations ###################################
+const userData = JSON.parse(localStorage.getItem('userData')) ?? [];
 let tbody = document.querySelector('tbody');
 
 let submitDataBtn = document.getElementById('submitData');
 
-let setData = localStorage.getItem('dummyData') ? JSON.parse(localStorage.getItem('dummyData')) : [];
-console.log(setData);
+let setData = JSON.parse(localStorage.getItem('userData')) ?? [];
 
 let name = document.getElementById('name');
 let dob = document.getElementById('dob');
 let email = document.getElementById('email');
 let phone = document.getElementById('phone');
 let gender = document.querySelector('input[name="gender"]:checked');
+
+console.log('setData', setData);
+console.log('userData', userData);
 
 //################## Advance table JS ##############################
 
@@ -60,7 +66,9 @@ const insertDataToAdvTable = () => {
       let td = document.createElement('td');
       td.classList.add(index);
 
-      td.innerText = val[i] || 'empty';
+      console.log('val', val[i]);
+
+      td.innerText = val[i] === 'null' ? '-' : val[i];
       if (i == 6) {
         td.innerHTML = `  <button onclick="editEntries(${index})">Edit</button>
         <button class="btn" onclick="deleteData(${index})">Delete</button>`;
@@ -75,6 +83,17 @@ insertDataToAdvTable();
 //###################### Create entries ######################################################
 let hobbies = [];
 
+const checkPhoneNumber = () => {
+  let phoneFieldLabel = document.querySelector("[class='error-phone']");
+  if (!phone.value.match(/^\d{10}$/)) {
+    phoneFieldLabel.innerText = 'Phone should be a number field with 10 digits.';
+    return false;
+  } else {
+    phoneFieldLabel.innerText = '';
+    return true;
+  }
+};
+
 const errorHandling = (fieldName) => {
   let flag = []; //will contain all validation boolean values
 
@@ -85,6 +104,9 @@ const errorHandling = (fieldName) => {
   let emailFieldLabel = document.querySelector("[class='error-email']");
 
   switch (fieldName) {
+    case 'phone':
+      checkPhoneNumber();
+      break;
     case 'name':
       if (!name.value.trim().match(/^[a-zA-Z0-9 ]{4,20}$/)) {
         nameFieldLabel.innerText =
@@ -101,10 +123,9 @@ const errorHandling = (fieldName) => {
 
     case 'date':
       if (!dob.value && fieldName === 'date') {
-        console.log('hello');
-
         dobFieldLabel.innerText = 'Date of birth is required';
         dobFieldLabel.focus();
+        // console.log('flag2');
 
         flag.splice(1, 0, false);
       } else {
@@ -143,12 +164,20 @@ const errorHandling = (fieldName) => {
         dobFieldLabel.focus();
 
         flag.splice(1, 0, false);
+      } else if (new Date(dob.value) >= new Date()) {
+        dobFieldLabel.innerText = 'Future dates are not allowed';
+        flag.splice(1, 0, false);
       } else {
         dobFieldLabel.innerText = '';
         flag.splice(1, 0, true);
       }
+
       if (!email.value.match(regrexEmail)) {
-        emailFieldLabel.innerText = 'Invalid Email';
+        if (email.value === '') {
+          emailFieldLabel.innerText = 'Email is required';
+        } else {
+          emailFieldLabel.innerText = 'Invalid Email';
+        }
         emailFieldLabel.focus();
 
         flag.splice(2, 0, false);
@@ -160,8 +189,22 @@ const errorHandling = (fieldName) => {
   }
 };
 
-const createData = () => {
-  const pushData = errorHandling().every((item) => item === true);
+// ################################################ INSERT DATA FUNCTIONALITY ###################################
+
+// Function to check Valid data
+function checkIfInputDataIsValid() {
+  let phoneNumberIsValid = true;
+  if (phone.value) {
+    phoneNumberIsValid = checkPhoneNumber();
+  }
+
+  return errorHandling().every((item) => item === true) && phoneNumberIsValid;
+
+  // return boolean
+}
+
+// function to set Data to localstorage
+function pushDataToLocalStorage() {
   hobbies = [];
 
   gender = document.querySelector('input[name="gender"]:checked');
@@ -172,88 +215,49 @@ const createData = () => {
     hobbies.push(x.value);
   }
 
-  // if (name.value !== '' && gender.value !== '' && dob.value !== '' && email.value.match(regrexEmail)) {
-  if (pushData) {
-    setData.push({
-      name: name.value,
-      gender: gender.value,
-      dob: dob.value,
-      email: email.value,
-      phone: phone.value || 'null',
-      hobbies: !hobbies.length == 0 ? hobbies : 'null',
-    });
-    localStorage.setItem('dummyData', JSON.stringify(setData));
-    checkData();
+  const newDataToPush = {
+    name: name.value,
+    gender: gender.value,
+    dob: dob.value,
+    email: email.value,
+    phone: phone.value || 'null',
+    hobbies: !hobbies.length == 0 ? hobbies : 'null',
+  };
 
-    // resetting the  form entries
-    name.value = null;
-    dob.value = null;
-    email.value = null;
-    document.querySelector("[value='Male']").checked = true;
-    phone.value = null;
+  setData?.push(newDataToPush);
 
-    hobbies?.forEach((val) => {
-      document.getElementById(`${val}`).checked = false;
-    });
+  localStorage.setItem('userData', JSON.stringify(setData));
+}
 
-    insertDataToAdvTable();
-    alert('Data submitted successfully!!');
-    window.scrollTo(0, document.body.scrollHeight);
-  }
-};
+function clearDataFromInputForm() {
+  name.value = null;
+  dob.value = null;
+  email.value = null;
+  document.querySelector("[value='Male']").checked = true;
+  phone.value = null;
 
-const deleteAllBtn = document.querySelector("[value='Delete all']");
-
-const checkData = () => {
-  setData = localStorage.getItem('dummyData') ? JSON.parse(localStorage.getItem('dummyData')) : [];
-
-  if (setData !== null && setData?.length !== 0) {
-    deleteAllBtn.style.display = 'block';
-  } else {
-    deleteAllBtn.style.display = 'none';
-  }
-
-  let previousData = '';
-
-  setData?.forEach((val, index) => {
-    previousData += `<tr id=${index}  >
-        <td>${val.name}</td>
-        <td>${val.gender}</td>
-        <td>${val.dob}</td>
-        <td>${val.email}</td>
-        <td>${val.phone}</td>
-        <td>${val.hobbies}</td>
-        <td>
-          <button onclick="editEntries(${index})">Edit</button>
-          <button onclick="deleteData(${index})">Delete</button>
-        </td>
-      </tr>`;
+  hobbies?.forEach((val) => {
+    document.getElementById(`${val}`).checked = false;
   });
 
-  tbody.innerHTML = previousData;
-};
+  setTimeout(() => {
+    alert('Data submitted successfully!!');
+  }, 10);
+}
 
-checkData();
+// Create data
 
-//###################### Delete entries ######################################################
-
-const deleteData = (rowCount) => {
-  let permissionToDeleteEntry = confirm('Are you Sure??');
-  if (permissionToDeleteEntry) {
-    const updatedData = setData.filter((item, index) => {
-      return index !== rowCount;
-    });
-
-    let row = document.getElementById(rowCount);
-    row.remove();
-
-    localStorage.setItem('dummyData', JSON.stringify(updatedData));
+function createData() {
+  if (checkIfInputDataIsValid()) {
+    pushDataToLocalStorage();
+    clearDataFromInputForm();
     checkData();
     insertDataToAdvTable();
   }
-};
+}
 
-//###################### Edit entries ######################################################
+//######################################################## UPDATE ENTRIES FUNCTIONALITY #################################
+
 const submitdataBtn = document.getElementById('submitData');
 const updateDataBtn = document.getElementById('updateDataBtn');
 const cancelUpdateDataBtn = document.getElementById('cancelUpdateDataBtn');
@@ -261,7 +265,7 @@ const cancelUpdateDataBtn = document.getElementById('cancelUpdateDataBtn');
 const editEntries = (rowCount) => {
   document.getElementById('jumpToThis').scrollIntoView();
 
-  setData = JSON.parse(localStorage.getItem('dummyData'));
+  setData = JSON.parse(localStorage.getItem('userData'));
   let dataToEdit = setData[rowCount];
 
   name.value = dataToEdit?.name;
@@ -291,7 +295,7 @@ updateDataBtn.addEventListener('click', (val) => {
   let updateDataBtn = document.getElementById('updateDataBtn');
   let rowCount = updateDataBtn.value;
 
-  if (name.value !== '' && gender.value !== '' && dob.value !== '' && email.value.match(regrexEmail)) {
+  if (checkIfInputDataIsValid()) {
     gender = document.querySelector('input[name="gender"]:checked');
 
     hobbies = [];
@@ -310,10 +314,10 @@ updateDataBtn.addEventListener('click', (val) => {
       hobbies: !hobbies.length == 0 ? hobbies : 'null',
     };
 
-    const previousData = JSON.parse(localStorage.getItem('dummyData'));
-    console.log(previousData);
+    const previousData = JSON.parse(localStorage.getItem('userData'));
+    // console.log(previousData);
     previousData.splice(rowCount, 1, newData);
-    localStorage.setItem('dummyData', JSON.stringify(previousData));
+    localStorage.setItem('userData', JSON.stringify(previousData));
     checkData();
     insertDataToAdvTable();
 
@@ -331,10 +335,70 @@ updateDataBtn.addEventListener('click', (val) => {
     let updateDataBtn = document.getElementById('updateDataBtn');
     updateDataBtn.style.display = 'none';
 
-    alert('Your data has been updated successfully!!');
-    window.scrollTo(0, document.body.scrollHeight);
+    setTimeout(() => {
+      alert('Your data has been updated successfully!!');
+    }, 10);
+
+    // window.scrollTo(0, document.body.scrollHeight);
   }
 });
+
+const deleteAllBtn = document.querySelector("[value='Delete all']");
+
+const checkData = () => {
+  setData = localStorage.getItem('userData') ? JSON.parse(localStorage.getItem('userData')) : [];
+
+  const mainContainers = document.getElementsByClassName('main-container');
+
+  if (setData !== null && setData?.length !== 0) {
+    mainContainers[1].style.display = 'block';
+    mainContainers[2].style.display = 'block';
+    deleteAllBtn.style.display = 'block';
+  } else {
+    deleteAllBtn.style.display = 'none';
+    mainContainers[1].style.display = 'none';
+    mainContainers[2].style.display = 'none';
+  }
+
+  let previousData = '';
+
+  setData?.forEach((val, index) => {
+    previousData += `<tr id=${index}  >
+        <td>${val.name}</td>
+        <td>${val.gender}</td>
+        <td>${val.dob}</td>
+        <td>${val.email}</td>
+        <td>${val.phone}</td>
+        <td>${val.hobbies === 'null' ? '-' : val.hobbies}</td>
+        <td>
+          <button onclick="editEntries(${index})">Edit</button>
+          <button onclick="deleteData(${index})">Delete</button>
+        </td>
+      </tr>`;
+  });
+
+  tbody.innerHTML = previousData;
+};
+
+checkData();
+
+//###################### Delete entries ######################################################
+
+const deleteData = (rowCount) => {
+  let permissionToDeleteEntry = confirm('Are you Sure??');
+  if (permissionToDeleteEntry) {
+    const updatedData = setData.filter((item, index) => {
+      return index !== rowCount;
+    });
+
+    let row = document.getElementById(rowCount);
+    row.remove();
+
+    localStorage.setItem('userData', JSON.stringify(updatedData));
+    checkData();
+    insertDataToAdvTable();
+  }
+};
 
 cancelUpdateDataBtn.addEventListener('click', () => {
   name.value = null;
@@ -348,7 +412,7 @@ cancelUpdateDataBtn.addEventListener('click', () => {
   submitdataBtn.style.display = 'block';
   cancelUpdateDataBtn.style.display = 'none';
   updateDataBtn.style.display = 'none';
-  window.scrollTo(0, document.body.scrollHeight);
+  // window.scrollTo(0, document.body.scrollHeight);
 });
 
 //###################### Search entries ######################################################
@@ -366,7 +430,7 @@ const searchEntries = (e) => {
         <td>${val.dob}</td>
         <td>${val.email}</td>
         <td>${val.phone}</td>
-        <td>${val.hobbies}</td>
+        <td>${val.hobbies === 'null' ? '-' : val.hobbies}</td>
 
         <td>
           <button onclick="editEntries(${index})">edit</button>
@@ -398,7 +462,7 @@ const sortEntriesAccToDob = () => {
         <td>${val.dob}</td>
         <td>${val.email}</td>
         <td>${val.phone}</td>
-        <td>${val.hobbies}</td>
+        <td>${val.hobbies === 'null' ? '-' : val.hobbies}</td>
 
         <td>
           <button onclick="editEntries(${index})">Edit</button>
@@ -415,10 +479,6 @@ const deleteAll = () => {
   const permsisson = confirm('Are you sure');
 
   if (permsisson) {
-    alert('pakku ne bhai??');
-    alert('Haji ek var pachu vichari Leje pachi ni keto');
-    alert('chheli var puchu chu bhai vichari lai');
-
     localStorage.clear();
     setData = [];
     console.log(setData);

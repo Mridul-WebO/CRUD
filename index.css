@@ -1,7 +1,7 @@
 /* ###### Add Employee Form Styling #########  */
 
 * {
-  scroll-behavior: smooth;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .main-container > h3 {
@@ -18,10 +18,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 0 50px;
+  padding: 5px;
 }
 
 .container {
   border: 1px solid #337ab7;
+  margin: 0 50px;
 }
 
 .row {
@@ -73,10 +76,10 @@ button {
 table,
 th,
 td {
-  border: 2px solid lightgrey;
+  border: 1px solid lightgrey;
   border-collapse: collapse;
   text-align: left;
-  padding: 5px;
+  padding: 15px;
 }
 
 .container-basic-table {
@@ -90,10 +93,10 @@ td {
   margin: 10px;
 }
 
-tbody > tr > td:last-child {
+/* tbody > tr > td:last-child {
   display: flex;
   justify-content: center;
-}
+} */
 
 .container-basic-table {
   display: flex;
@@ -105,11 +108,6 @@ tbody > tr > td:last-child {
 .container-basic-table > table {
   width: 96%;
   margin: 10px;
-}
-
-tbody > tr > td:last-child {
-  display: flex;
-  justify-content: center;
 }
 
 /* advnace table */
@@ -145,4 +143,6 @@ tbody > tr > td:last-child {
 [class^='error'] {
   color: red;
   margin: 5px 0px 0px 5px;
+  font-size: 15px;
+  position: relative;
 }
