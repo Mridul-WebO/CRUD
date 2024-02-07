@@ -84,15 +84,16 @@ td {
 
 .container-basic-table {
   /* need to comment this code inorder to apply overflow auto */
-  /* display: flex;
-  flex-direction: column;
-  align-items: center; */
+  /* display: flex; */
+
   overflow: auto;
 }
 
 .container-basic-table > table {
   width: 96%;
-  margin: 10px;
+  margin: auto;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 /* advnace table */
@@ -178,6 +179,10 @@ td {
     display: flex;
     justify-content: center;
     /* border: 2px solid red; */
+  }
+
+  .row > .col:nth-child(1) {
+    font-size: 13px;
   }
 }
 

@@ -111,8 +111,14 @@ const errorHandling = (fieldName) => {
       if (!name.value.trim().match(/^[a-zA-Z0-9 ]{4,20}$/)) {
         nameFieldLabel.innerText =
           'Name field should be between 4 to 20 characters, including only alphanumeric characters';
+
         nameFieldLabel.focus();
 
+        flag.splice(0, 0, false);
+      } else if (name.value.match(/^[0-9]/)) {
+        nameFieldLabel.innerText = 'Only alphanumeric characters';
+
+        nameFieldLabel.focus();
         flag.splice(0, 0, false);
       } else {
         nameFieldLabel.innerText = '';
@@ -137,7 +143,11 @@ const errorHandling = (fieldName) => {
 
     case 'email':
       if (!email.value.match(regrexEmail) && fieldName === 'email') {
-        emailFieldLabel.innerText = 'Invalid Email';
+        if (email.value === '') {
+          emailFieldLabel.innerText = 'Email is required';
+        } else {
+          emailFieldLabel.innerText = 'Invalid Email';
+        }
         emailFieldLabel.focus();
 
         flag.splice(2, 0, false);
@@ -476,7 +486,7 @@ const sortEntriesAccToDob = () => {
 
 const deleteAll = () => {
   console.log(setData);
-  const permsisson = confirm('Are you sure');
+  const permsisson = confirm('Are you sure??');
 
   if (permsisson) {
     localStorage.clear();
