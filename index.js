@@ -3,7 +3,7 @@
 // restricted future dates selection
 document.forms[0].elements.dob.max = new Date().toISOString().split('T')[0];
 
-const regrexEmail = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{1,5})$/;
+const regrexEmail = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{1,5})$/;
 const regrexPhone = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/;
 
 // ################################################## Global declarations ###################################

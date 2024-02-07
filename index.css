@@ -83,25 +83,10 @@ td {
 }
 
 .container-basic-table {
-  display: flex;
+  /* need to comment this code inorder to apply overflow auto */
+  /* display: flex;
   flex-direction: column;
-  align-items: center;
-}
-
-.container-basic-table > table {
-  width: 96%;
-  margin: 10px;
-}
-
-/* tbody > tr > td:last-child {
-  display: flex;
-  justify-content: center;
-} */
-
-.container-basic-table {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  align-items: center; */
   overflow: auto;
 }
 
@@ -111,10 +96,6 @@ td {
 }
 
 /* advnace table */
-
-.advance-table {
-  overflow: auto;
-}
 
 [value='Delete all'] {
   cursor: pointer;
@@ -146,3 +127,58 @@ td {
   font-size: 15px;
   position: relative;
 }
+
+/*########################## Media Queries starts here ################################# */
+
+/* reference */
+
+/*
+
+         Extra small : <576px
+             Small : ≥576px
+          Medium : ≥768px
+              Large : ≥992px
+            Extra large : ≥1200px
+      */
+@media only screen and (min-width: 1200px) {
+  #adv > tbody > tr:last-child button {
+    margin-top: 5px;
+  }
+
+  /* #adv > tbody > tr:last-child > td {
+    flex-direction: row;
+    justify-content: center;
+  } */
+}
+@media only screen and (max-width: 1200px) and (min-width: 992px) {
+}
+@media only screen and (max-width: 992px) and (min-width: 768px) {
+}
+
+@media only screen and (max-width: 768px) and (min-width: 576px) {
+}
+
+@media only screen and (max-width: 768px) and (min-width: 576px) {
+}
+
+@media only screen and (max-width: 576px) {
+  #navbar-container {
+    margin: 0 10px;
+  }
+
+  .container {
+    border: 1px solid #337ab7;
+    margin: 0 10px;
+  }
+
+  .row:nth-child(7) > .col:nth-child(1) {
+    display: none;
+  }
+  .row:nth-child(7) > .col:nth-child(2) {
+    display: flex;
+    justify-content: center;
+    /* border: 2px solid red; */
+  }
+}
+
+/*########################## Media Queries ends here ################################# */
