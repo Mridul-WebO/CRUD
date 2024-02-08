@@ -299,6 +299,8 @@ const updateDataBtn = document.getElementById('updateDataBtn');
 const cancelUpdateDataBtn = document.getElementById('cancelUpdateDataBtn');
 
 const editEntries = (rowCount) => {
+  const formHead = document.getElementById('formHeading');
+  formHead.innerHTML = '&nbsp;&nbsp;Update Employee';
   document.getElementById('jumpToThis').scrollIntoView();
 
   setData = JSON.parse(localStorage.getItem('userData'));
