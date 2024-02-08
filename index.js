@@ -22,13 +22,16 @@ let gender = document.querySelector('input[name="gender"]:checked');
 
 console.log('setData', setData);
 console.log('userData', userData);
+let updatePhase = false;
 
 //################## Advance table JS ##############################
 
 const insertDataToAdvTable = () => {
   const advTableContent = document.querySelector('#adv tbody');
   advTableContent.innerHTML = `
-
+  <tr>
+  <th>ID</th>
+</tr>
   <tr>
   <th>Name</th>
 </tr>
@@ -61,17 +64,22 @@ const insertDataToAdvTable = () => {
 
   setData?.forEach((item, index) => {
     let val = Object.values(item);
+    // console.log('item', val);
 
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 8; i++) {
       let td = document.createElement('td');
       td.classList.add(index);
 
-      console.log('val', val[i]);
+      if (i === 0) {
+        td.innerText = index + 1;
+        // console.log(index, val[i]);
+      } else {
+        td.innerText = val[i - 1] === 'null' ? '-' : val[i - 1];
 
-      td.innerText = val[i] === 'null' ? '-' : val[i];
-      if (i == 6) {
-        td.innerHTML = `  <button onclick="editEntries(${index})">Edit</button>
+        if (i == 7) {
+          td.innerHTML = `  <button onclick="editEntries(${index})">Edit</button>
         <button class="btn" onclick="deleteData(${index})">Delete</button>`;
+        }
       }
 
       trs[i].appendChild(td);
@@ -95,6 +103,13 @@ const checkPhoneNumber = () => {
 };
 
 const errorHandling = (fieldName) => {
+  const emailFromLocalStorage = JSON.parse(localStorage.getItem('userData')) ?? [];
+  // console.log(emailFromLocalStorage);
+  const duplicateEmail = emailFromLocalStorage
+    .map((val) => {
+      return val.email;
+    })
+    .some((val) => val === email.value);
   let flag = []; //will contain all validation boolean values
 
   // name, gender, dob, email
@@ -142,12 +157,19 @@ const errorHandling = (fieldName) => {
       break;
 
     case 'email':
+      // console.log(email.value);
+
       if (!email.value.match(regrexEmail) && fieldName === 'email') {
         if (email.value === '') {
           emailFieldLabel.innerText = 'Email is required';
         } else {
           emailFieldLabel.innerText = 'Invalid Email';
         }
+        emailFieldLabel.focus();
+
+        flag.splice(2, 0, false);
+      } else if (duplicateEmail && !updatePhase) {
+        emailFieldLabel.innerText = 'Email already exits';
         emailFieldLabel.focus();
 
         flag.splice(2, 0, false);
@@ -191,6 +213,11 @@ const errorHandling = (fieldName) => {
         emailFieldLabel.focus();
 
         flag.splice(2, 0, false);
+      } else if (duplicateEmail && !updatePhase) {
+        emailFieldLabel.innerText = 'Email already exits';
+        emailFieldLabel.focus();
+
+        flag.splice(2, 0, false);
       } else {
         emailFieldLabel.innerText = '';
         flag.splice(2, 0, true);
@@ -215,23 +242,22 @@ function checkIfInputDataIsValid() {
 
 // function to set Data to localstorage
 function pushDataToLocalStorage() {
-  hobbies = [];
-
   gender = document.querySelector('input[name="gender"]:checked');
 
-  let getHobbies = document.querySelectorAll('input[type="checkbox"]:checked');
+  hobbies = Array.from(document.forms[0].elements.hobbies)
+    .filter((val) => val.checked)
+    .map((val) => val.value);
 
-  for (let x of getHobbies) {
-    hobbies.push(x.value);
-  }
+  const uniqueId = 'id' + Math.random().toString(16).slice(2);
 
   const newDataToPush = {
+    userId: uniqueId,
     name: name.value,
     gender: gender.value,
     dob: dob.value,
     email: email.value,
     phone: phone.value || 'null',
-    hobbies: !hobbies.length == 0 ? hobbies : 'null',
+    hobbies: hobbies.length == 0 ? 'null' : hobbies,
   };
 
   setData?.push(newDataToPush);
@@ -290,6 +316,7 @@ const editEntries = (rowCount) => {
     });
 
   // changing the submit button to update
+  updatePhase = true;
   errorHandling();
   submitDataBtn.style.display = 'none';
 
@@ -308,12 +335,9 @@ updateDataBtn.addEventListener('click', (val) => {
   if (checkIfInputDataIsValid()) {
     gender = document.querySelector('input[name="gender"]:checked');
 
-    hobbies = [];
-
-    let getHobbies = document.querySelectorAll('input[type="checkbox"]:checked');
-    for (let x of getHobbies) {
-      hobbies.push(x.value);
-    }
+    hobbies = Array.from(document.forms[0].elements.hobbies)
+      .filter((val) => val.checked)
+      .map((val) => val.value);
 
     let newData = {
       name: name.value,
@@ -321,8 +345,10 @@ updateDataBtn.addEventListener('click', (val) => {
       dob: dob.value,
       email: email.value,
       phone: phone.value || 'null',
-      hobbies: !hobbies.length == 0 ? hobbies : 'null',
+      hobbies: hobbies.length == 0 ? 'null' : hobbies,
     };
+
+    // console.log('newData', newData);
 
     const previousData = JSON.parse(localStorage.getItem('userData'));
     // console.log(previousData);
@@ -374,11 +400,12 @@ const checkData = () => {
 
   setData?.forEach((val, index) => {
     previousData += `<tr id=${index}  >
+         <td>${index + 1}</td>
         <td>${val.name}</td>
         <td>${val.gender}</td>
         <td>${val.dob}</td>
         <td>${val.email}</td>
-        <td>${val.phone}</td>
+        <td>${val.phone === 'null' ? '-' : val.phone}</td>
         <td>${val.hobbies === 'null' ? '-' : val.hobbies}</td>
         <td>
           <button onclick="editEntries(${index})">Edit</button>
@@ -411,14 +438,15 @@ const deleteData = (rowCount) => {
 };
 
 cancelUpdateDataBtn.addEventListener('click', () => {
-  name.value = null;
-  dob.value = null;
-  email.value = null;
-  phone.value = null;
-  document.querySelectorAll('[type=checkbox]').forEach((val) => {
-    // console.log(val);
-    val.checked = false;
-  });
+  document.forms[0].reset();
+  // name.value = null;
+  // dob.value = null;
+  // email.value = null;
+  // phone.value = null;
+  // document.querySelectorAll('[type=checkbox]').forEach((val) => {
+  //   // console.log(val);
+  //   val.checked = false;
+  // });
   submitdataBtn.style.display = 'block';
   cancelUpdateDataBtn.style.display = 'none';
   updateDataBtn.style.display = 'none';
