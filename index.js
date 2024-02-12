@@ -62,6 +62,8 @@ const insertDataToAdvTable = () => {
   `;
   const trs = document.querySelectorAll('#adv tr');
 
+  console.log('setData', setData);
+
   setData?.forEach((item, index) => {
     let val = Object.values(item);
     // console.log('item', val);
@@ -69,17 +71,16 @@ const insertDataToAdvTable = () => {
     for (let i = 0; i < 8; i++) {
       let td = document.createElement('td');
       td.classList.add(index);
+      console.log('val', val);
 
-      if (i === 0) {
+      if (i == 0) {
+        // console.log(val[i]);
         td.innerText = index + 1;
-        // console.log(index, val[i]);
+      } else if (i == 7) {
+        td.innerHTML = `  <button onclick="editEntries(${index})">Edit</button>
+          <button class="btn" onclick="deleteData(${index})">Delete</button>`;
       } else {
-        td.innerText = val[i - 1] === 'null' ? '-' : val[i - 1];
-
-        if (i == 7) {
-          td.innerHTML = `  <button onclick="editEntries(${index})">Edit</button>
-        <button class="btn" onclick="deleteData(${index})">Delete</button>`;
-        }
+        td.innerText = val[i];
       }
 
       trs[i].appendChild(td);
@@ -246,7 +247,9 @@ function pushDataToLocalStorage() {
 
   hobbies = Array.from(document.forms[0].elements.hobbies)
     .filter((val) => val.checked)
-    .map((val) => val.value);
+    .map((val) => val.value)
+    .join(', ');
+  // console.log('hobbies', hobbies);
 
   const uniqueId = 'id' + Math.random().toString(16).slice(2);
 
@@ -256,8 +259,8 @@ function pushDataToLocalStorage() {
     gender: gender.value,
     dob: dob.value,
     email: email.value,
-    phone: phone.value || 'null',
-    hobbies: hobbies.length == 0 ? 'null' : hobbies,
+    phone: phone.value || null,
+    hobbies: hobbies,
   };
 
   setData?.push(newDataToPush);
@@ -272,9 +275,9 @@ function clearDataFromInputForm() {
   document.querySelector("[value='Male']").checked = true;
   phone.value = null;
 
-  hobbies?.forEach((val) => {
-    document.getElementById(`${val}`).checked = false;
-  });
+  // hobbies?.forEach((val) => {
+  //   document.getElementById(`${val}`).checked = false;
+  // });
 
   setTimeout(() => {
     alert('Data submitted successfully!!');
@@ -312,10 +315,10 @@ const editEntries = (rowCount) => {
   email.value = dataToEdit?.email;
   phone.value = dataToEdit?.phone;
 
-  dataToEdit.hobbies !== 'null' &&
-    dataToEdit?.hobbies?.forEach((val) => {
-      document.getElementById(`${val}`).checked = true;
-    });
+  // dataToEdit.hobbies !== '' &&
+  //   dataToEdit?.hobbies?.forEach((val) => {
+  //     document.getElementById(`${val}`).checked = true;
+  //   });
 
   // changing the submit button to update
   updatePhase = true;
@@ -339,15 +342,16 @@ updateDataBtn.addEventListener('click', (val) => {
 
     hobbies = Array.from(document.forms[0].elements.hobbies)
       .filter((val) => val.checked)
-      .map((val) => val.value);
+      .map((val) => val.value)
+      .join(', ');
 
     let newData = {
       name: name.value,
       gender: gender.value,
       dob: dob.value,
       email: email.value,
-      phone: phone.value || 'null',
-      hobbies: hobbies.length == 0 ? 'null' : hobbies,
+      phone: phone.value || null,
+      hobbies: hobbies,
     };
 
     // console.log('newData', newData);
@@ -407,8 +411,8 @@ const checkData = () => {
         <td>${val.gender}</td>
         <td>${val.dob}</td>
         <td>${val.email}</td>
-        <td>${val.phone === 'null' ? '-' : val.phone}</td>
-        <td>${val.hobbies === 'null' ? '-' : val.hobbies}</td>
+        <td>${val.phone ?? '-'}</td>
+        <td>${val.hobbies || '-'}</td>
         <td>
           <button onclick="editEntries(${index})">Edit</button>
           <button onclick="deleteData(${index})">Delete</button>
@@ -465,15 +469,15 @@ const searchEntries = (e) => {
   let previousData = '';
   filterData?.forEach((val, index) => {
     previousData += `<tr id=${index}  >
+         <td>${index + 1}</td>
         <td>${val.name}</td>
         <td>${val.gender}</td>
         <td>${val.dob}</td>
         <td>${val.email}</td>
-        <td>${val.phone}</td>
-        <td>${val.hobbies === 'null' ? '-' : val.hobbies}</td>
-
+        <td>${val.phone ?? '-'}</td>
+        <td>${val.hobbies ?? '-'}</td>
         <td>
-          <button onclick="editEntries(${index})">edit</button>
+          <button onclick="editEntries(${index})">Edit</button>
           <button onclick="deleteData(${index})">Delete</button>
         </td>
       </tr>`;
@@ -497,13 +501,13 @@ const sortEntriesAccToDob = () => {
   let previousData = '';
   sortedData?.forEach((val, index) => {
     previousData += `<tr id=${index}  >
+         <td>${index + 1}</td>
         <td>${val.name}</td>
         <td>${val.gender}</td>
         <td>${val.dob}</td>
         <td>${val.email}</td>
-        <td>${val.phone}</td>
-        <td>${val.hobbies === 'null' ? '-' : val.hobbies}</td>
-
+        <td>${val.phone ?? '-'}</td>
+        <td>${val.hobbies ?? '-'}</td>
         <td>
           <button onclick="editEntries(${index})">Edit</button>
           <button onclick="deleteData(${index})">Delete</button>
@@ -516,7 +520,7 @@ const sortEntriesAccToDob = () => {
 
 const deleteAll = () => {
   console.log(setData);
-  const permsisson = confirm('Are you sure??');
+  const permsisson = confirm('Are you sure?');
 
   if (permsisson) {
     localStorage.clear();
